@@ -1,4 +1,4 @@
-export const host = 'https://chat-app-sv.vercel.app';
+export const host = 'https://chat-app-be-three.vercel.app';
 
 export const registerRoute = `${host}/user/register`;
 export const avatarRoute = `${host}/upload`;
