@@ -17,6 +17,9 @@ app.use(express.urlencoded({ extended: false }));
 DBconnection();
 
 app.use('/', routes);
+app.get('/hello-world', (request, response) => {
+  response.send('Hello World!');
+});
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server started on Port ${process.env.PORT}`);
