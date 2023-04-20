@@ -16,6 +16,9 @@ router.use('/invite', invitationRoute);
 router.use('/search', searchRoute);
 router.use('/chatroom', chatroomRoute);
 router.get('/refresh_token', TokenMiddleware.refreshToken);
+router.get('/hello-world', (request, response) => {
+  response.send('Hello World!');
+});
 
 router.use('/', (req, res) => {
   res.status(404).send({ message: 'Not Found' });
