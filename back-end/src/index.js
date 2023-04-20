@@ -9,7 +9,7 @@ require('dotenv').config();
 app.use(cookieParser());
 
 app.use(
-  cors({ credentials: true, origin: 'https://chat-app-fe-ruddy.vercel.app/' })
+  cors({ credentials: true, origin: 'https://chat-app-fe-ruddy.vercel.app' })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
