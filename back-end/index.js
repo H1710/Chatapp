@@ -17,9 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 DBconnection();
 
 app.use('/', routes);
-app.get('/', (req, res) => {
-  res.send('Express on Vercel');
-});
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server started on Port ${process.env.PORT}`);
