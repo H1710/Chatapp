@@ -28,7 +28,7 @@ function Chat() {
 
   useEffect(() => {
     if (auth.access_token) {
-      socket.current = io('https://chat-app-be-three.vercel.app/', {
+      socket.current = io('https://chat-app-be-three.vercel.app', {
         transports: ['websocket'],
         upgrade: false,
       });
