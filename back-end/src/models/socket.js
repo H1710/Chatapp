@@ -10,7 +10,7 @@ module.exports = {
     const io = socket(server, {
       cors: {
         origin: 'https://chat-app-fe-ruddy.vercel.app',
-        credentials: true,
+        // credentials: true,
       },
     });
     const onlineUsers = {};
