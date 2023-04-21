@@ -28,10 +28,7 @@ function Chat() {
 
   useEffect(() => {
     if (auth.access_token) {
-      socket.current = io('https://chat-app-be-three.vercel.app', {
-        transports: ['websocket'],
-        upgrade: false,
-      });
+      socket.current = io('https://chat-app-be-three.vercel.app');
       dispatch({ type: 'SOCKET', payload: socket.current });
       socket.current.emit('login', { userId: auth._id });
       socket.current.on('onlineUser', data => {
