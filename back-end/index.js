@@ -18,7 +18,7 @@ DBconnection();
 
 app.use('/api/v1', routes);
 
-const server = app.listen(process.env.PORT, () => {
+const server = app.listen('https://chat-app-fe-ruddy.vercel.app', () => {
   console.log(`Server started on Port ${process.env.PORT}`);
 });
 
