@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getUserRoute, host } from '../utils/APIRoutes';
 import Contacts from '../components/Contacts';
 import ChatContainer from '../components/ChatContainer';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import AppContext from '../components/AppContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +28,7 @@ function Chat() {
 
   useEffect(() => {
     if (auth.access_token) {
-      socket.current = io(host);
+      socket.current = io('https://chat-app-be-three.vercel.app/api/v1/');
       dispatch({ type: 'SOCKET', payload: socket.current });
       socket.current.emit('login', { userId: auth._id });
       socket.current.on('onlineUser', data => {
