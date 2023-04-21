@@ -7,6 +7,7 @@ const otpRoute = require('./otp');
 const searchRoute = require('./search');
 const chatroomRoute = require('./chatroom');
 const { TokenMiddleware } = require('../middlewares/rf_token');
+const user = require('../entities/user');
 
 router.use('/upload', uploadRoute);
 router.use('/user', userRoute);
@@ -17,7 +18,7 @@ router.use('/search', searchRoute);
 router.use('/chatroom', chatroomRoute);
 router.get('/refresh_token', TokenMiddleware.refreshToken);
 router.get('/hello-world', (request, response) => {
-  response.send('Hello World!');
+  response.send(user.find());
 });
 
 router.use('/', (req, res) => {
