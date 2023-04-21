@@ -13,6 +13,7 @@ module.exports = {
         // credentials: true,
       },
     });
+    io.set('transports', ['websocket']);
     const onlineUsers = {};
     const offlineUsersTime = {}; // key is id of user, value is time offline
     const globalUsers = {};
