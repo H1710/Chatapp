@@ -7,7 +7,7 @@ const otpRoute = require('./otp');
 const searchRoute = require('./search');
 const chatroomRoute = require('./chatroom');
 const { TokenMiddleware } = require('../middlewares/rf_token');
-const user = require('../entities/user');
+const User = require('../entities/user');
 
 router.use('/upload', uploadRoute);
 router.use('/user', userRoute);
@@ -17,8 +17,10 @@ router.use('/invite', invitationRoute);
 router.use('/search', searchRoute);
 router.use('/chatroom', chatroomRoute);
 router.get('/refresh_token', TokenMiddleware.refreshToken);
-router.get('/hello-world', (request, response) => {
-  response.send(user.find());
+
+router.get('/hello', async (req, res) => {
+  const a = await User.findById('64412da0472e55d99d93a5e9');
+  return res.status(200).send(a);
 });
 
 router.use('/', (req, res) => {
