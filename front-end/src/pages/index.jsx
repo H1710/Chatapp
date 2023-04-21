@@ -28,9 +28,7 @@ function Chat() {
 
   useEffect(() => {
     if (auth.access_token) {
-      socket.current = io(host, {
-        transports: ['websocket'],
-      });
+      socket.current = io(host);
       dispatch({ type: 'SOCKET', payload: socket.current });
       socket.current.emit('login', { userId: auth._id });
       socket.current.on('onlineUser', data => {
