@@ -242,7 +242,9 @@ function ChatContainer({
                     key={uuidv4()}
                     ref={scrollRef}
                     className={`message flex w-full relative items-end gap-1 ${
-                      message.fromSelf ? 'flex-row-reverse' : 'flex-row'
+                      message.sender._id === auth._id
+                        ? 'flex-row-reverse'
+                        : 'flex-row'
                     }`}
                     title={message.sender.fullname}
                   >
@@ -264,7 +266,7 @@ function ChatContainer({
                     </div>
                     <div
                       className={`max-w-[30%] break-words flex flex-col p-1 ${
-                        message.fromSelf
+                        message.sender._id === auth._id
                           ? 'bg-[#79c7c5] text-[#e9e9e9]'
                           : 'bg-[#97b6e2] text-[#e9e9e9]'
                       }  min-w-[5rem] rounded-xl`}
