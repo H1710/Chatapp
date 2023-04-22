@@ -104,7 +104,10 @@ function SetAvatar() {
       avatar.append('avatar', file);
       avatar.append('username', auth.username);
       const data = await axios.post(avatarRoute, avatar);
-      dispatch({ type: 'AUTH', payload: data.data.data });
+      dispatch({
+        type: 'AUTH',
+        payload: { ...auth, avatar: data.data.data.avatar },
+      });
       if (data.status === 200) {
         navigate('/');
       } else {
