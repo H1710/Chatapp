@@ -1,5 +1,6 @@
 import {
   loginRoute,
+  logoutRoute,
   refreshTokenRoute,
   registerRoute,
 } from '../../utils/APIRoutes';
