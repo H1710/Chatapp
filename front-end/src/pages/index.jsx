@@ -25,7 +25,7 @@ function Chat() {
     const handleHome = async () => {
       const chat_app_key = await localStorage.getItem('chat-app');
       if (chat_app_key === 'fe1') {
-        socket.current = io('https://chat-app-be1.onrender.com/api/v1');
+        socket.current = io('https://chat-app-be1.onrender.com/');
         dispatch({ type: 'SOCKET', payload: socket.current });
         socket.current.emit('login', { userId: auth._id });
         socket.current.on('onlineUser', data => {
