@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Contacts from '../components/Contacts';
 import ChatContainer from '../components/ChatContainer';
@@ -21,39 +21,24 @@ function Chat() {
 
   const { auth } = useSelector(state => state);
 
-  // useEffect(() => {
-  //   const handleHome = async () => {
-  //     const chat_app_key = await localStorage.getItem('chat-app');
-  //     if (chat_app_key === 'fe1') {
-  //       socket.current = io('https://chat-app-be1.onrender.com/');
-  //       dispatch({ type: 'SOCKET', payload: socket.current });
-  //       socket.current.emit('login', { userId: auth._id });
-  //       socket.current.on('onlineUser', data => {
-  //         const usersId = Object.values(data.onlineUsers);
-  //         setOnlineUsers(usersId);
-  //         setOfflineUsersTime(data.offlineUsersTime);
-  //       });
-  //     } else {
-  //       await navigate('/login');
-  //     }
-  //   };
-  //   handleHome();
-  // }, [auth]);
-  useLayoutEffect(() => {
-    if (auth.access_token) {
-      socket.current = io('https://chat-app-be1.onrender.com/');
-      dispatch({ type: 'SOCKET', payload: socket.current });
-      socket.current.emit('login', { userId: auth._id });
-      socket.current.on('onlineUser', data => {
-        const usersId = Object.values(data.onlineUsers);
-        // console.log(usersId);
-        setOnlineUsers(usersId);
-        setOfflineUsersTime(data.offlineUsersTime);
-      });
-    } else {
-      navigate('/login');
-    }
-  }, [auth.access_token]);
+  useEffect(() => {
+    const handleHome = async () => {
+      const chat_app_key = await localStorage.getItem('chat-app');
+      if (chat_app_key === 'fe1') {
+        socket.current = io('https://chat-app-be1.onrender.com/');
+        dispatch({ type: 'SOCKET', payload: socket.current });
+        socket.current.emit('login', { userId: auth._id });
+        socket.current.on('onlineUser', data => {
+          const usersId = Object.values(data.onlineUsers);
+          setOnlineUsers(usersId);
+          setOfflineUsersTime(data.offlineUsersTime);
+        });
+      } else {
+        await navigate('/login');
+      }
+    };
+    handleHome();
+  }, [auth]);
 
   // useEffect(() => {
   //   const checkUser = async () => {
