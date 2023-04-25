@@ -15,6 +15,7 @@ export const login = userLogin => async dispatch => {
       type: 'AUTH',
       payload: { ...res.data.data, access_token: res.data.access_token },
     });
+    await localStorage.setItem('chat-app', 'fe1');
     dispatch({ type: 'ALERT', payload: { loading: false } });
     dispatch({ type: 'ALERT', payload: { success: 'Login success' } });
   } catch (err) {
@@ -42,10 +43,10 @@ export const logout = () => async dispatch => {
 };
 
 export const refreshToken = () => async dispatch => {
-  // const logged = localStorage.getItem('logged');
-  // if (logged !== 'fe1') {
-  //   return;
-  // }
+  const logged = await localStorage.getItem('chat-app');
+  if (logged !== 'fe1') {
+    return;
+  }
 
   try {
     dispatch({ type: 'ALERT', payload: { loading: true } });
