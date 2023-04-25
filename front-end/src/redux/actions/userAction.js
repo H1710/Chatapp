@@ -1,10 +1,4 @@
-import {
-  changeInfoRoute,
-  createChatroomRoute,
-  loginRoute,
-  refreshTokenRoute,
-  registerRoute,
-} from '../../utils/APIRoutes';
+import { changeInfoRoute, createChatroomRoute } from '../../utils/APIRoutes';
 import { getAPI, patchAPI, postAPI } from '../../utils/FetchData';
 import { validInfo } from '../../utils/Valid';
 import { getAllContacts } from '../../utils/APIRoutes';

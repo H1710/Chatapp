@@ -11,7 +11,7 @@ import SetInfo from '../components/SetInfo';
 function Chat() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentRoom, setCurrentRoom] = useState(undefined);
   const [navSelect, setNavSelect] = useState('messages');
