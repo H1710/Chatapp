@@ -17,7 +17,10 @@ export const login = userLogin => async dispatch => {
     dispatch({ type: 'ALERT', payload: { loading: false } });
     dispatch({ type: 'ALERT', payload: { success: 'Login success' } });
   } catch (err) {
-    dispatch({ type: 'ALERT', payload: { errors: err.response.data.message } });
+    dispatch({
+      type: 'ALERT',
+      payload: { errors: err.response?.data.message },
+    });
   }
 };
 

@@ -2,6 +2,7 @@ import { changeInfoRoute, createChatroomRoute } from '../../utils/APIRoutes';
 import { getAPI, patchAPI, postAPI } from '../../utils/FetchData';
 import { validInfo } from '../../utils/Valid';
 import { getAllContacts } from '../../utils/APIRoutes';
+import axios from 'axios';
 
 export const changeInfo = (info, auth) => async dispatch => {
   const check = validInfo(info);
@@ -44,7 +45,7 @@ export const createChatroom = userIDs => async dispatch => {
 
 export const getContacts = auth => async dispatch => {
   try {
-    const res = await getAPI(`${getAllContacts}/${auth._id}`);
+    const res = await axios.get(`${getAllContacts}/${auth._id}`);
     dispatch({
       type: 'AUTH',
       payload: { ...auth, contactList: res.data?.data },
