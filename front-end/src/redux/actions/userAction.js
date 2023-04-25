@@ -45,7 +45,7 @@ export const createChatroom = userIDs => async dispatch => {
 
 export const getContacts = auth => async dispatch => {
   try {
-    const res = await axios.get(`${getAllContacts}/${auth._id}`);
+    const res = await getAPI(`${getAllContacts}/${auth._id}`);
     dispatch({
       type: 'AUTH',
       payload: { ...auth, contactList: res.data?.data },
