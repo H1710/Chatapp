@@ -32,11 +32,11 @@ export const logout = () => async dispatch => {
       payload: {},
     });
     localStorage.clear();
-
+    const res = await getAPI(logoutRoute);
     dispatch({ type: 'ALERT', payload: { loading: false } });
     dispatch({ type: 'ALERT', payload: { success: 'Logout success' } });
   } catch (err) {
-    dispatch({ type: 'ALERT', payload: { errors: err } });
+    dispatch({ type: 'ALERT', payload: { errors: err.response.data.msg } });
   }
 };
 

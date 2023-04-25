@@ -3,6 +3,7 @@ export const host = 'https://chat-app-be1.onrender.com/api/v1';
 export const registerRoute = `${host}/user/register`;
 export const avatarRoute = `${host}/upload`;
 export const loginRoute = `${host}/user/login`;
+export const logoutRoute = `${host}/user/logout`;
 export const refreshTokenRoute = `${host}/refresh_token`;
 export const getUserRoute = `${host}/user`;
 export const changeInfoRoute = `${host}/user/change-info`;
