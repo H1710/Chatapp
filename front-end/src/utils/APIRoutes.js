@@ -28,4 +28,4 @@ export const addMessageRoute = `${host}/message/add`;
 export const createChatroomRoute = `${host}/chatroom/create`;
 
 export const allUsersRoute = `${host}/user/allusers`;
-export const getAllMessageRoute = `${host}/api/messages/getmsg`;
+export const getAllMessageRoute = `${host}/messages/getmsg`;

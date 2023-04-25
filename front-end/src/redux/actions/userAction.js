@@ -7,6 +7,7 @@ import {
 } from '../../utils/APIRoutes';
 import { getAPI, patchAPI, postAPI } from '../../utils/FetchData';
 import { validInfo } from '../../utils/Valid';
+import { getAllContacts } from '../../utils/APIRoutes';
 
 export const changeInfo = (info, auth) => async dispatch => {
   const check = validInfo(info);
