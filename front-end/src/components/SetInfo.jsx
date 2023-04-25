@@ -45,27 +45,35 @@ const SetInfo = () => {
             {auth.avatar ? (
               <img
                 src={'data:image/png;base64, ' + auth.avatar?.imageBase64}
-                alt=""
+                alt={auth.fullname}
                 className="w-20 h-20 rounded-full shadow-lg"
+                title={auth.fullname}
               />
             ) : (
-              <div className=" text-[50px] text-[rgb(249,251,255)] h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]">
+              <div
+                className=" text-[50px] text-[rgb(249,251,255)] h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]"
+                title={auth.fullname}
+              >
                 <p>{auth?.fullname[0]}</p>
               </div>
             )}
 
             <div className="flex flex-col">
               <div className="text-2xl text-[#79C7C5] font-normal">
-                {auth?.fullname}
+                {auth?.fullname.length > 15
+                  ? auth.fullname.substring(0, 15) + '...'
+                  : auth.fullname}
               </div>
               <div className="text-lg text-[#79C7C5] font-normal">
-                {auth?.username}
+                {auth?.username.length > 15
+                  ? auth.username.substring(0, 15) + '...'
+                  : auth.username}
               </div>
             </div>
           </div>
           <div className="flex justify-end">
             <button
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded flex items-center gap-1"
+              className="rounded hover:bg-opacity-95 bg-[#63a09e] text-white font-medium py-2 px-2 flex items-center gap-1"
               onClick={() => navigate('/setAvatar')}
             >
               <BiEditAlt fontSize={26} />
@@ -125,6 +133,7 @@ const SetInfo = () => {
                       ['username']: !edit['username'],
                     })
                   }
+                  className="cursor-pointer"
                 >
                   {edit.username ? (
                     <BiEditAlt fontSize={26} />
@@ -153,6 +162,7 @@ const SetInfo = () => {
                       ['fullname']: !edit['fullname'],
                     })
                   }
+                  className="cursor-pointer"
                 >
                   {edit.fullname ? (
                     <BiEditAlt fontSize={26} />
@@ -191,7 +201,10 @@ const SetInfo = () => {
               </div>
             </div>
           </div>
-          <button className="w-50 h-10 bg-white rounded-md" type="submit">
+          <button
+            className="w-50 h-10 rounded hover:bg-opacity-95 bg-[#63a09e] text-white"
+            type="submit"
+          >
             Save
           </button>
         </form>

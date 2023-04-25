@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserPlus,
@@ -16,14 +15,14 @@ import { useSelector } from 'react-redux';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [searchUser, setSearchUser] = useState('');
-  const [loadUserChats, setLoadUserChats] = useState([]);
+  const [loadUserChats, setLoadUserChats] = useState('');
 
   const { auth } = useSelector(state => state);
 
   const handleSearchChange = e => {
     setSearchUser(e.target.value);
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleRequest = async () => {
       try {
         const res = await axios.get(`${getRequestSendedRoute}/${auth._id}`);
@@ -32,7 +31,7 @@ function SearchUser({ socket }) {
     };
     handleRequest();
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleSearchUser = async () => {
       try {
         let fullname = searchUser;
@@ -95,7 +94,7 @@ function SearchUser({ socket }) {
               {loadUserChats?.map((contact, index) => {
                 return (
                   <div
-                    className="contact flex flex-row items-center px-2 my-4"
+                    className="contact flex flex-row items-center px-2 py-2 cursor-pointer rounded-md border-b-[#79C7C5] border-b-[1px] hover:bg-white/20"
                     key={index}
                   >
                     <div className="avatar flex flex-row items-center space-x-2 text-lg">
@@ -114,7 +113,11 @@ function SearchUser({ socket }) {
                         </div>
                       )}
 
-                      <h3>{contact.fullname}</h3>
+                      <h3>
+                        {contact?.fullname.length > 15
+                          ? contact.fullname.substring(0, 15) + '...'
+                          : contact.fullname}
+                      </h3>
                     </div>
                     <div className="username flex flex-row flex-1 justify-end mr-2">
                       {auth.friendIdsList.includes(contact._id) ? (

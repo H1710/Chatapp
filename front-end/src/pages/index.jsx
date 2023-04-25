@@ -1,22 +1,17 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserRoute, host } from '../utils/APIRoutes';
 import Contacts from '../components/Contacts';
 import ChatContainer from '../components/ChatContainer';
 import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
-import AppContext from '../components/AppContext';
 import { useDispatch, useSelector } from 'react-redux';
-import Menu from '../components/Menu';
 import Navigation from '../components/Navigation';
 import SetInfo from '../components/SetInfo';
 
 function Chat() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [contacts, setContacts] = useState([]);
+  // const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentRoom, setCurrentRoom] = useState(undefined);
   const [navSelect, setNavSelect] = useState('messages');
@@ -26,7 +21,7 @@ function Chat() {
 
   const { auth } = useSelector(state => state);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (auth.access_token) {
       socket.current = io('https://chat-app-be1.onrender.com/');
       dispatch({ type: 'SOCKET', payload: socket.current });

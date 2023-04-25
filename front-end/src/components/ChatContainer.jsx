@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import {
@@ -69,7 +69,7 @@ function ChatContainer({
   //   }
   // }, [onlineUsers]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleSetMessages = async () => {
       if (currentChat) {
         const myId = auth._id;
@@ -125,11 +125,11 @@ function ChatContainer({
     });
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     arrivalMessages && setMessages(prev => [...prev, arrivalMessages]);
   }, [arrivalMessages]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollRef?.current?.scrollIntoView({ behaviour: 'smooth' });
   }, [messages]);
 
@@ -195,10 +195,16 @@ function ChatContainer({
 
               <p className="text-xl text-[#777777]">
                 {currentChat.length == 2
-                  ? currentChat[0].fullname +
-                    ',' +
-                    currentChat[1].fullname +
-                    '...'
+                  ? (currentChat[0].fullname + ',' + currentChat[1].fullname)
+                      .length > 15
+                    ? (
+                        currentChat[0].fullname +
+                        ',' +
+                        currentChat[1].fullname
+                      ).substring(0, 15) + '...'
+                    : currentChat[0].fullname + ',' + currentChat[1].fullname
+                  : currentChat[0].fullname.length > 15
+                  ? currentChat[0].fullname.substring(0, 15) + '...'
                   : currentChat[0].fullname}
               </p>
             </div>

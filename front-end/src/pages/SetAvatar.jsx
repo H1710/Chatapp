@@ -181,7 +181,12 @@ function SetAvatar() {
               src={avatarImageCrop?.imageUrl}
               alt=""
             />
-            <button type="submit">Confirm</button>
+            <button
+              type="submit"
+              className="rounded hover:bg-opacity-95 bg-[#63a09e] text-white font-normal"
+            >
+              Confirm
+            </button>
           </form>
         </FormContainer>
       )}

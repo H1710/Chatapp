@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Loading = () => {
   return (
     <FormContainer>
-      <div className="d-flex position-fixed w-100 h-100 text-center align-items-center justify-content-center">
+      <div className="d-flex z-20 position-fixed w-100 h-100 text-center align-items-center justify-content-center">
         <div className="meetup ">
           <div></div>
           <div></div>

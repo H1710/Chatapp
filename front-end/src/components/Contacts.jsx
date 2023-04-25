@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBell,
-  faMagnifyingGlass,
-  faMessage,
-} from '@fortawesome/free-solid-svg-icons';
 import SearchUser from './SearchUser';
 import Message from './Message';
 import Notifications from './Notifications';
-import Logout from './Logout';
-import Menu from './Menu';
-import Navigation from './Navigation';
 import { useSelector } from 'react-redux';
 
 function Contacts({ contacts, changeChat, socket, onlineUsers, navSelect }) {
@@ -55,7 +45,9 @@ function Contacts({ contacts, changeChat, socket, onlineUsers, navSelect }) {
           )}
 
           <div className="text-2xl text-[#79C7C5] font-normal">
-            {auth?.fullname}
+            {auth.fullname && auth?.fullname.length > 15
+              ? auth.fullname.substr(0, 15) + '...'
+              : auth.fullname}
           </div>
         </div>
         {navSelect === 'messages' && (

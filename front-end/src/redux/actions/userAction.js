@@ -46,3 +46,15 @@ export const createChatroom = userIDs => async dispatch => {
     dispatch({ type: 'ALERT', payload: { errors: err.response.data.message } });
   }
 };
+
+export const getContacts = auth => async dispatch => {
+  try {
+    const res = await getAPI(`${getAllContacts}/${auth._id}`);
+    dispatch({
+      type: 'AUTH',
+      payload: { ...auth, contactList: res.data?.data },
+    });
+  } catch (err) {
+    dispatch({ type: 'ALERT', payload: { errors: err.response.data.message } });
+  }
+};
