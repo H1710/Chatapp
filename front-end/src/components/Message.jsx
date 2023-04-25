@@ -21,11 +21,7 @@ function Message({ changeChat, onlineUsers }) {
 
   useLayoutEffect(() => {
     const handleUserChats = async () => {
-      let data;
-      if (auth._id) data = await axios.get(`${getAllContacts}/${auth?._id}`);
-
-      setContacts(data?.data.data.chatRoomIdList);
-      setUserChats(data?.data.data.contacts);
+      auth._id && (await dispatch(getContacts(auth)));
     };
     handleUserChats();
   }, [auth._id]);
