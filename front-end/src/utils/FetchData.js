@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: 'https://chat-app-be1.onrender.com',
+  baseURL: 'https://chat-app-be1.onrender.com/api/v1',
 });
 
 export const postAPI = async (url, info) => {
