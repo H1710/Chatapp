@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/actions/authAction';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ export default function LogoutAlert() {
   const [open, setOpen] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { socket } = useSelector(state => state);
 
   const cancelButtonRef = useRef(null);
 
@@ -76,6 +77,7 @@ export default function LogoutAlert() {
                     onClick={() => {
                       dispatch({ type: 'ALERT', payload: { logout: false } });
                       setOpen(false);
+                      socket.close();
                     }}
                     ref={cancelButtonRef}
                   >
