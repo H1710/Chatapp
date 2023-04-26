@@ -9,7 +9,7 @@ import {
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import logoHome from './logo/logoHome.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
 
 function ChatContainer({
@@ -25,6 +25,7 @@ function ChatContainer({
   const [date, setDate] = useState(0);
   const scrollRef = useRef();
   const [minutes, setMinutes] = useState(1);
+  const dispatch = useDispatch();
   const { auth, socket } = useSelector(state => state);
 
   // useEffect(() => {
