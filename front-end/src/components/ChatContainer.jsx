@@ -88,7 +88,7 @@ function ChatContainer({
     };
 
     handleSetMessages();
-  }, [currentChat, auth]);
+  }, [currentChat]);
 
   useEffect(() => {
     const joinRoom = () => {
