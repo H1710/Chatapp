@@ -22,9 +22,9 @@ function Chat() {
   const { auth } = useSelector(state => state);
 
   useEffect(() => {
+    socket.current = io('https://chat-app-be1.onrender.com/');
     const handleHome = async () => {
       const chat_app_key = await localStorage.getItem('chat-app');
-      socket.current = io('https://chat-app-be1.onrender.com/');
       if (chat_app_key === 'fe1') {
         dispatch({ type: 'SOCKET', payload: socket.current });
         socket.current.emit('login', { userId: auth._id });
@@ -36,11 +36,11 @@ function Chat() {
       } else {
         await navigate('/login');
       }
-      return () => {
-        socket.current.close();
-      };
     };
     handleHome();
+    return () => {
+      socket.current.close();
+    };
   }, [auth]);
 
   // useEffect(() => {
