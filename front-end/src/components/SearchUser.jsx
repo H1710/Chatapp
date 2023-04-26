@@ -14,7 +14,7 @@ import {
 } from '../utils/APIRoutes';
 import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
-import { postAPI } from '../utils/FetchData';
+import { getAPI, postAPI } from '../utils/FetchData';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [searchUser, setSearchUser] = useState('');
@@ -39,7 +39,7 @@ function SearchUser({ socket }) {
       setLoadUserChats('');
       try {
         let fullname = searchUser;
-        const data = await postAPI(searchUserByFullnameRoute, {
+        const data = await getAPI(searchUserByFullnameRoute, {
           fullname,
         });
 
@@ -91,7 +91,7 @@ function SearchUser({ socket }) {
           />
         )}
       </div>
-      {searchUser && loadUserChats ? (
+      {loadUserChats ? (
         <div className="contacts overflow-y-scroll h-[240px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
           {loadUserChats?.length !== 0 ? (
             <div>
@@ -152,7 +152,7 @@ function SearchUser({ socket }) {
           )}
         </div>
       ) : (
-        <LoadingCompoent />
+        searchUser && <LoadingCompoent />
       )}
     </div>
   );
