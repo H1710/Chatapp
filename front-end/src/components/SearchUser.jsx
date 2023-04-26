@@ -39,7 +39,7 @@ function SearchUser({ socket }) {
       setLoadUserChats('');
       try {
         let fullname = searchUser;
-        const data = await axios.post(searchUserByFullnameRoute, {
+        const data = await axios.get(searchUserByFullnameRoute, {
           fullname,
         });
 
