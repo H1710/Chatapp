@@ -14,6 +14,7 @@ import {
 } from '../utils/APIRoutes';
 import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
+import { postAPI } from '../utils/FetchData';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [searchUser, setSearchUser] = useState('');
@@ -33,12 +34,12 @@ function SearchUser({ socket }) {
     };
     handleRequest();
   }, []);
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleSearchUser = async () => {
       setLoadUserChats('');
       try {
         let fullname = searchUser;
-        const data = await axios.post(searchUserByFullnameRoute, {
+        const data = await postAPI(searchUserByFullnameRoute, {
           fullname,
         });
 
@@ -90,7 +91,7 @@ function SearchUser({ socket }) {
           />
         )}
       </div>
-      {searchUser && loadUserChats && (
+      {searchUser && loadUserChats ? (
         <div className="contacts overflow-y-scroll h-[240px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
           {loadUserChats?.length !== 0 ? (
             <div>
@@ -150,6 +151,8 @@ function SearchUser({ socket }) {
             <p>User not found</p>
           )}
         </div>
+      ) : (
+        <LoadingCompoent />
       )}
     </div>
   );
