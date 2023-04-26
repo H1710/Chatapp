@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { getAllContacts, host } from '../utils/APIRoutes';
+import { host } from '../utils/APIRoutes';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import LoadingCompoent from './alert/LoadingCompoent';
 import { getContacts } from '../redux/actions/userAction';
+import { getAllContacts } from '../utils/APIRoutes';
 
 function Message({ changeChat, onlineUsers }) {
   const [currentSelected, setCurrentSelected] = useState(undefined);
-  const [userChats, setUserChats] = useState([]);
-  const [contacts, setContacts] = useState([]);
   const dispatch = useDispatch();
   const changeCurrentChat = (index, contact) => {
     changeChat(auth.contactList.chatRoomIdList[index], contact);
@@ -30,19 +29,20 @@ function Message({ changeChat, onlineUsers }) {
 
   return (
     <div className="h-[70%] flex flex-col justify-end">
-      <div className="overflow-y-scroll h-[210px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-2">
+      <div className="overflow-y-scroll overflow-x-hidden lg:h-[210px] h-[400px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-2">
         {auth.contactList ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-center">
             {auth.contactList.contacts.map((contact, index) => {
               return (
                 <div
-                  className={`flex px-4 py-2 cursor-pointer space-y-2 border-b-[#79C7C5] border-b-[1px] ${
+                  className={`flex justify-center lg:justify-start lg:px-4 py-2 cursor-pointer space-y-2 border-b-[#79C7C5] lg:border-b-[1px] ${
                     index === currentSelected ? ' bg-white/50 rounded-lg' : ''
                   }`}
                   onClick={() => changeCurrentChat(index, contact)}
                   key={index}
+                  title={contact[0].fullname}
                 >
-                  <div className="flex items-center justify-center mr-6 relative">
+                  <div className="flex items-center justify-center lg:mr-6 relative">
                     {onlineUsers && onlineUsers?.includes(contact[0]._id) ? (
                       <div className="absolute z-20 top-10 left-8 bg-[#31a24c] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
                     ) : (
@@ -102,7 +102,7 @@ function Message({ changeChat, onlineUsers }) {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col justify-center">
+                  <div className="hidden lg:flex flex-col justify-center">
                     <h3 className="text-[#777777] mb-1">
                       {contact.length == 2
                         ? (contact[0].fullname + ',' + contact[1].fullname)

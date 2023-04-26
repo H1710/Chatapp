@@ -38,10 +38,10 @@ const SetInfo = () => {
   };
 
   return (
-    <div className="h-full w-[50%] bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg flex items-center justify-center space-x-3">
-      <div className="flex flex-col p-10 gap-10">
-        <div className="w-full flex items-center gap-4">
-          <div className="flex flex-row gap-4 flex-1">
+    <div className="h-full lg:w-[50%] w-[75%] bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg flex items-center justify-center space-x-3">
+      <div className="flex flex-col p-10 lg:gap-10">
+        <div className="w-full flex lg:flex-row lg:mt-0 flex-col items-center gap-2 mb-2">
+          <div className="flex flex-row gap-4 lg:gap-10 flex-1">
             {auth.avatar ? (
               <img
                 src={'data:image/png;base64, ' + auth.avatar?.imageBase64}
@@ -71,7 +71,7 @@ const SetInfo = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex w-full lg:w-fit justify-end">
             <button
               className="rounded hover:bg-opacity-95 bg-[#63a09e] text-white font-medium py-2 px-2 flex items-center gap-1"
               onClick={() => navigate('/setAvatar')}
@@ -83,7 +83,7 @@ const SetInfo = () => {
         </div>
         <form
           enctype="multipart/form-data"
-          className="w-full h-full flex flex-col gap-10 justify-center items-center"
+          className="w-full flex flex-col gap-10 justify-center items-center"
           onSubmit={e => handleSubmit(e)}
         >
           <div className="grid grid-cols-2 grid-flow-row gap-4">

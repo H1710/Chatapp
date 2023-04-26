@@ -78,7 +78,7 @@ function Chat() {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-[100vw] h-[100vh] bg-gradient-to-r from-[#79C7C5] to-[#F9FBFF] px-[50px] py-[30px]">
+    <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-gradient-to-r from-[#79C7C5] to-[#F9FBFF] lg:px-[50px] py-[30px]">
       <Navigation handleSetNav={handleSetNav} navSelect={navSelect} />
       <Contacts
         contacts={contacts}
@@ -91,6 +91,7 @@ function Chat() {
         <SetInfo />
       ) : (
         <ChatContainer
+          navSelect={navSelect}
           currentChat={currentChat}
           currentRoom={currentRoom}
           offlineUsersTime={offlineUsersTime}

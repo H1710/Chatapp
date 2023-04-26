@@ -10,14 +10,16 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import logoHome from './logo/logoHome.png';
 import { useSelector } from 'react-redux';
+import LoadingCompoent from './alert/LoadingCompoent';
 
 function ChatContainer({
+  navSelect,
   currentChat,
   currentRoom,
   onlineUsers,
   offlineUsersTime,
 }) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState('');
   const [arrivalMessages, setArrivalMessages] = useState('');
   // const [online, setOnline] = useState(onlineUsers);
   const [date, setDate] = useState(0);
@@ -136,7 +138,13 @@ function ChatContainer({
   return (
     <>
       {currentChat ? (
-        <div className="h-full w-[50%] bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg">
+        <div
+          className={`h-full lg:w-[50%] ${
+            navSelect === 'search-friends' || navSelect === 'notifications'
+              ? 'w-0'
+              : 'w-[75%]'
+          } bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg`}
+        >
           <div className="bg-[#F9FBFF] w-full flex flex-row px-4 py-2 justify-between">
             <div className="user-details flex flex-row items-center space-x-4">
               {currentChat.length == 2 ? (
@@ -292,13 +300,19 @@ function ChatContainer({
           <ChatInput handleSendMsg={handleSendMsg} />
         </div>
       ) : (
-        <div className="h-full w-[50%] bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg flex items-center justify-center space-x-3">
+        <div
+          className={`h-full flex gap-2 justify-center items-center lg:w-[50%] ${
+            navSelect === 'search-friends' || navSelect === 'notifications'
+              ? 'w-0'
+              : 'w-[75%]'
+          } bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg`}
+        >
           <img
             src={logoHome}
             alt=""
-            className="w-[100px] h-[100px] flex items-center content-center"
+            className="w-[5rem] h-[5rem] flex items-center content-center"
           />
-          <h2 data-text="CHAT_APP" className="text-6xl font-light">
+          <h2 data-text="CHAT_APP" className="text-[3rem] font-light">
             CHAT_APP
           </h2>
         </div>

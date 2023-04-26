@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { getAllContacts, getFriendList } from '../../utils/APIRoutes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faClose } from '@fortawesome/free-solid-svg-icons';
-import LoadingCompoent from './LoadingCompoent';
 
 import axios from 'axios';
 import { createChatroom } from '../../redux/actions/userAction';
+import LoadingCompoent from './LoadingCompoent';
 
 export default function AddGroup() {
   const [open, setOpen] = useState(true);
@@ -73,7 +73,7 @@ export default function AddGroup() {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full justify-center p-4 text-center items-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -83,7 +83,7 @@ export default function AddGroup() {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform flex flex-col justify-between overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all h-[400px] sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform flex flex-col justify-between overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all h-[400px] w-[30rem]">
                 <div className="pt-1">
                   <span className="px-4 ">Friend(s)</span>
                   {searchUser ? (
@@ -147,7 +147,6 @@ export default function AddGroup() {
                     {member && member.length > 0 ? (
                       member?.map(ele => (
                         <div className="flex relative h-[24px] font-light items-center text-white bg-[#63a09e] rounded-full">
-                          {' '}
                           <span className="p-2">{ele.fullname}</span>
                           <FontAwesomeIcon
                             onClick={() => handleRemoveMember(ele)}

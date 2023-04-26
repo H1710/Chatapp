@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
+import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserPlus,
@@ -12,6 +13,7 @@ import {
   getRequestSendedRoute,
 } from '../utils/APIRoutes';
 import { useSelector } from 'react-redux';
+import LoadingCompoent from './alert/LoadingCompoent';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [searchUser, setSearchUser] = useState('');
@@ -88,7 +90,7 @@ function SearchUser({ socket }) {
         )}
       </div>
       {searchUser && loadUserChats && (
-        <div className="contacts overflow-y-scroll h-[160px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
+        <div className="contacts overflow-y-scroll h-[240px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
           {loadUserChats?.length !== 0 ? (
             <div>
               {loadUserChats?.map((contact, index) => {
