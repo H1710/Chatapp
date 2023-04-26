@@ -18,6 +18,7 @@ const Toast = ({ title, body, bgColor }) => {
         zIndex: 50,
         width: '300px',
       }}
+      onClick={() => handleClose()}
     >
       <div className={`toast-header text-light ${bgColor}`}>
         <strong className="me-auto">{title}</strong>
@@ -26,7 +27,6 @@ const Toast = ({ title, body, bgColor }) => {
           className="btn-close"
           data-bs-dismiss="toast"
           aria-label="Close"
-          onClick={() => handleClose()}
         ></button>
       </div>
       <div className="toast-body bg-white">

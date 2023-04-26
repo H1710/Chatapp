@@ -35,7 +35,7 @@ function SearchUser({ socket }) {
   }, []);
   useLayoutEffect(() => {
     const handleSearchUser = async () => {
-      setLoadUserChats([]);
+      setLoadUserChats('');
       try {
         let fullname = searchUser;
         const data = await axios.post(searchUserByFullnameRoute, {
