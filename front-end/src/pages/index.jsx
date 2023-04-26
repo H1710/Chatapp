@@ -38,7 +38,7 @@ function Chat() {
       }
     };
     return () => {
-      socket.close();
+      socket.current.close();
     };
     handleHome();
   }, [auth]);
