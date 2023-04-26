@@ -34,12 +34,12 @@ function SearchUser({ socket }) {
     };
     handleRequest();
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleSearchUser = async () => {
       setLoadUserChats('');
       try {
         let fullname = searchUser;
-        const data = await getAPI(searchUserByFullnameRoute, {
+        const data = await axios.get(searchUserByFullnameRoute, {
           fullname,
         });
 
