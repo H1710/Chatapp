@@ -74,12 +74,15 @@ function ChatContainer({
   useLayoutEffect(() => {
     const handleSetMessages = async () => {
       if (currentChat) {
+        setMessages([]);
+        dispatch({ type: 'ALERT', payload: { loading: true } });
         const myId = auth._id;
         const response = await axios.post(
           `${getMessagesRoute}/${currentRoom}`,
           { myId }
         );
         setMessages(response.data.data);
+        dispatch({ type: 'ALERT', payload: { loading: false } });
       }
     };
 
