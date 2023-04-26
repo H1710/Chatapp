@@ -36,9 +36,9 @@ function Chat() {
       } else {
         await navigate('/login');
       }
-    };
-    return () => {
-      socket.current.close();
+      return () => {
+        socket.current.close();
+      };
     };
     handleHome();
   }, [auth]);
