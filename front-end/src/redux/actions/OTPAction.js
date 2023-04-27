@@ -24,12 +24,12 @@ export const confirmOTP = userInfo => async dispatch => {
     const res = await postAPI(confirmOTPRoute, userInfo);
     if (res.status === 200) {
       dispatch({ type: 'OTP', payload: { check: true } });
+      dispatch({ type: 'ALERT', payload: { loading: false } });
       dispatch({ type: 'ALERT', payload: { success: res.data.message } });
     } else {
       dispatch({ type: 'ALERT', payload: { errors: res.data.message } });
       dispatch({ type: 'OTP', payload: { check: false } });
     }
-    dispatch({ type: 'ALERT', payload: { loading: false } });
   } catch (err) {
     dispatch({ type: 'OTP', payload: { check: false } });
     dispatch({ type: 'ALERT', payload: { errors: err.response.data.message } });
