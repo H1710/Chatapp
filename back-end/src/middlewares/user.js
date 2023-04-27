@@ -13,14 +13,23 @@ class UserMiddleware {
       await res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        sameSite: 'none',
       });
     }
     return res.status(result.getStatusCode()).send(result.getData());
   }
 
+  static async logout(req, res, next) {
+    try {
+      await res.clearCookie('refreshtoken');
+      return res.json({ msg: 'Logged out' });
+    } catch (err) {
+      return res.status(500).json({ msg: 'Logout error' });
+    }
+  }
+
   static async register(req, res, next) {
-    const { phone, email, username, password, confirmPassword } = req.body;
+    const { phone, email, fullname, username, password, confirmPassword } =
+      req.body;
     if (!phone.match(/(0[3|5|7|8|9])+([0-9]{8})\b/g))
       return res.status(400).send({ message: 'Phone is invalid' });
     if (password.length < 8)
@@ -32,6 +41,7 @@ class UserMiddleware {
     const result = await UserModel.register(
       phone,
       email,
+      fullname,
       username,
       password,
       confirmPassword

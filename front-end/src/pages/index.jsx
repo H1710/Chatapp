@@ -22,7 +22,7 @@ function Chat() {
   const { auth } = useSelector(state => state);
 
   useEffect(() => {
-    socket.current = io('https://chat-app-be1.onrender.com/');
+    socket.current = io('http://localhost:5001/');
     const handleHome = async () => {
       const chat_app_key = await localStorage.getItem('chat-app');
       if (chat_app_key === 'fe1') {

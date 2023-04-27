@@ -1,4 +1,4 @@
-export const host = 'https://chat-app-be1.onrender.com/api/v1';
+export const host = 'http://localhost:5001/api/v1';
 
 export const registerRoute = `${host}/user/register`;
 export const avatarRoute = `${host}/upload`;
