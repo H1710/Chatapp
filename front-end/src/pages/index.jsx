@@ -26,14 +26,13 @@ function Chat() {
   const { auth } = useSelector(state => state);
 
   useEffect(() => {
-    console.log(auth);
     if (!auth.access_token) {
       navigate('/login');
     }
   }, [auth.access_token]);
 
   useEffect(() => {
-    socket.current = io('https://chat-app-be1.onrender.com/');
+    socket.current = io('http://localhost:5001/');
     const handleHome = async () => {
       dispatch({ type: 'SOCKET', payload: socket.current });
       socket.current.emit('login', { userId: auth._id });
