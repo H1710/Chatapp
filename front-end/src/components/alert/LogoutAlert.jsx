@@ -33,6 +33,11 @@ export default function LogoutAlert() {
       toast.error(error.data.message, toastOptions);
     },
     onSuccess: data => {
+      dispatch({
+        type: 'AUTH',
+        payload: {},
+      });
+      navigate('/login');
       toast.success(data.data.msg, toastOptions);
     },
   });
