@@ -11,6 +11,8 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { confirmOTP, resendOTP, sendOTP } from '../redux/actions/OTPAction';
+import { postAPI } from '../utils/FetchData';
+import { useMutation } from 'react-query';
 
 function ConfirmOTP() {
   const navigate = useNavigate();
@@ -30,14 +32,35 @@ function ConfirmOTP() {
     handleSendOTP();
   }, []);
 
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+  };
+
   useEffect(() => {
     if (otp.check) {
+      toast.success('Register success!', toastOptions);
       navigate('/login');
     }
   }, [otp]);
 
+  const { mutate: resendOTP, isLoading } = useMutation({
+    mutationFn: info => {
+      return postAPI(sendOTPRoute, info);
+    },
+    onError: error => {
+      toast.error(error.data.message, toastOptions);
+    },
+    onSuccess: data => {
+      toast.success(data.data.message, toastOptions);
+    },
+  });
+
   const handleResendOTP = async () => {
-    dispatch(resendOTP({ username: username, email: email }));
+    resendOTP({ username: username, email: email });
   };
 
   const handleSubmitOTP = async e => {
@@ -53,25 +76,6 @@ function ConfirmOTP() {
         password: password,
       })
     );
-
-    // const data = axios.post(confirmOTPRoute, {
-    //   OTPcode,
-    //   email,
-    //   username,
-    //   fullname,
-    //   phone,
-    //   password,
-    // });
-    // data.then(res => {
-    //   if (res.status === 200) {
-    //     console.log('successfully');
-    //     navigate('/register/avatar', {
-    //       state: {
-    //         username: username,
-    //       },
-    //     });
-    //   }
-    // });
   };
 
   return (
@@ -98,7 +102,7 @@ function ConfirmOTP() {
         </span>
         <button
           type="submit"
-          className="w-full h-[40px] rounded-xl hover:bg-opacity-80 bg-[#777777] text-white"
+          className="w-full h-[40px] rounded-xl hover:bg-opacity-80 bg-[#63a09e] text-white"
         >
           Submit
         </button>
