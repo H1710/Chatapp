@@ -14,7 +14,6 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { check } = useSelector(state => state);
   const [values, setValues] = useState({
     fullname: '',
     username: '',
@@ -24,16 +23,31 @@ function Register() {
     confirmPassword: '',
   });
 
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     const check = validRegister(values);
     if (check.errLength > 0) {
-      dispatch({ type: 'ALERT', payload: { errors: check.errMsg[0] } });
+      toast.error(check.errMsg[0], toastOptions);
+      // dispatch({ type: 'ALERT', payload: { errors: check.errMsg[0] } });
     } else {
       try {
         const res = await postAPI(registerRoute, values);
         const { username, phone, email, password, fullname } = values;
-
+        toast.info('Please check your email to submit OTP code', {
+          position: 'top-right',
+          autoClose: 10000,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'light',
+        });
         navigate('/confirmOTP', {
           state: {
             username: username,
@@ -44,10 +58,7 @@ function Register() {
           },
         });
       } catch (err) {
-        dispatch({
-          type: 'ALERT',
-          payload: { errors: err.response.data.message },
-        });
+        toast.error(err.response.data.message, toastOptions);
       }
     }
   };

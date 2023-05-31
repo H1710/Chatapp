@@ -1,8 +1,6 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../redux/actions/authAction';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { getAPI } from '../../utils/FetchData';
@@ -25,7 +23,7 @@ export default function LogoutAlert() {
     theme: 'light',
   };
 
-  const { mutate: logout, isSuccess } = useMutation({
+  const { mutate: logout } = useMutation({
     mutationFn: () => {
       return getAPI(logoutRoute);
     },
@@ -41,8 +39,6 @@ export default function LogoutAlert() {
       toast.success(data.data.msg, toastOptions);
     },
   });
-
-  if (isSuccess) navigate('/login');
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -105,9 +101,7 @@ export default function LogoutAlert() {
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:!bg-gray-200 sm:mt-0 sm:w-auto"
                     onClick={() => {
-                      dispatch({ type: 'ALERT', payload: { logout: false } });
                       setOpen(false);
-                      socket.close();
                     }}
                     ref={cancelButtonRef}
                   >
