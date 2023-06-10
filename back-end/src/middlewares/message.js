@@ -3,6 +3,7 @@ const { MessageModel } = require('../models/mesage');
 class MessageMiddleware {
   static async getMessages(req, res, next) {
     const { myId } = req.body;
+    // console.log(myId);
     const chatRoomId = req.params.chatRoomId;
     const result = await MessageModel.getMessages(myId, chatRoomId);
     return res.status(result.getStatusCode()).send(result.getData());

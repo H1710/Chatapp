@@ -33,6 +33,7 @@ function Chat() {
 
   useEffect(() => {
     socket.current = io('https://chat-app-be1.onrender.com');
+    // socket.current = io('http://localhost:5001');
     const handleHome = async () => {
       dispatch({ type: 'SOCKET', payload: socket.current });
       socket.current.emit('login', { userId: auth._id });

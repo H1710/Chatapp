@@ -13,6 +13,9 @@ class UserMiddleware {
       await res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000,
+        sameSite: 'none',
+        secure: true,
+        // domain: 'https://chat-app-fe-ruddy.vercel.app/',
       });
     }
     return res.status(result.getStatusCode()).send(result.getData());
@@ -20,7 +23,12 @@ class UserMiddleware {
 
   static async logout(req, res, next) {
     try {
-      await res.clearCookie('refreshtoken');
+      await res.clearCookie('refreshtoken', {
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none',
+        // domain: 'https://chat-app-fe-ruddy.vercel.app/',
+      });
       return res.json({ msg: 'Logged out' });
     } catch (err) {
       return res.status(500).json({ msg: 'Logout error' });
@@ -49,6 +57,11 @@ class UserMiddleware {
     return res.status(result.getStatusCode()).send(result.getData());
   }
 
+  static async getAllUsers(req, res, next) {
+    const result = await UserModel.getAllUsers();
+    return res.status(result.getStatusCode()).send(result.getData());
+  }
+
   static async changePassword(req, res, next) {
     const { email, password, newPassword, confirmNewPassword } = req.body;
     if (password.length < 8)
@@ -70,7 +83,10 @@ class UserMiddleware {
   }
 
   static async changeInfo(req, res, next) {
-    const { fullname, username, id } = req.body;
+    if (!req.user)
+      return res.status(400).json({ msg: 'Invalid Authentication.' });
+    const id = req.user.id;
+    const { fullname, username } = req.body;
 
     const result = await UserModel.changeInfo(fullname, username, id);
     return res.status(result.getStatusCode()).send(result.getData());
