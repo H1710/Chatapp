@@ -9,12 +9,6 @@ import { getUsers } from './apis/user.api';
 
 function App() {
   const dispatch = useDispatch();
-  const { data } = useQuery({
-    queryKey: ['getUsers'],
-    queryFn: () => getUsers(),
-    staleTime: 10 * (60 * 1000),
-    cacheTime: 15 * (60 * 1000),
-  });
 
   useEffect(() => {
     dispatch(refreshToken());

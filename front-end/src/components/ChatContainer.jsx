@@ -160,7 +160,7 @@ function ChatContainer({
             navSelect === 'search-friends' || navSelect === 'notifications'
               ? 'w-0'
               : 'w-[75%]'
-          } bg-[#F9FBFF] bg-opacity-80 rounded-xl overflow-hidden shadow-lg`}
+          } bg-[#F9FBFF] bg-opacity-80 flex flex-col justify-between rounded-xl overflow-hidden shadow-lg`}
         >
           <div className="bg-[#F9FBFF] h-[70px] w-full flex flex-row px-4 py-2 justify-between">
             {!isLoading && (
@@ -264,7 +264,7 @@ function ChatContainer({
             )}
           </div>
 
-          <div className="chat-messages h-[73%] px-4 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
+          <div className="chat-messages flex-1 px-4 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
             {isLoading ? (
               <LoadingCompoent />
             ) : (

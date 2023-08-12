@@ -15,46 +15,34 @@ import {
 } from '../utils/APIRoutes';
 import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
-import { getAPI } from '../utils/FetchData';
+import { postAPI } from '../utils/FetchData';
+import useDebounce from '../hooks/useDebounce';
 import { useQuery } from 'react-query';
-import { getUsers } from '../apis/user.api';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
-  const [searchUser, setSearchUser] = useState('');
-  const [loadUserChats, setLoadUserChats] = useState([]);
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState('');
 
   const { auth } = useSelector(state => state);
 
-  const handleSearchChange = e => {
-    clearTimeout(searchTimeout);
-    setSearchUser(e.target.value);
-    setLoading(true);
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterUsers(e.target.value);
-        setLoading(false);
-        setLoadUserChats(searchResult);
-      }, 500)
-    );
-  };
+  const keySearch = useDebounce(search, 500);
 
-  console.log(loadUserChats);
-
-  const filterUsers = fullname => {
-    const regex = new RegExp(fullname, 'i'); // 'i' flag for case-insensitive search
-    return data?.data.users.filter(
-      item => regex.test(item.fullname) || regex.test(item.phone)
-    );
-  };
-
-  const { data } = useQuery({
-    queryKey: ['getUsers'],
-    queryFn: () => getUsers(),
-    staleTime: 10 * (60 * 1000),
-    cacheTime: 15 * (60 * 1000),
+  const {
+    data: dataSearch,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['search', keySearch],
+    queryFn: () => {
+      if (keySearch) {
+        return postAPI(`${searchUserByFullnameRoute}`, {
+          fullname: keySearch,
+        });
+      }
+    },
+    staleTime: 3 * (60 * 1000),
+    cacheTime: 5 * (60 * 1000),
   });
+
   useLayoutEffect(() => {
     const handleRequest = async () => {
       try {
@@ -84,34 +72,33 @@ function SearchUser({ socket }) {
         <input
           type="tel"
           placeholder="Search..."
-          onChange={e => handleSearchChange(e)}
-          value={searchUser}
+          onChange={e => setSearch(e.target.value)}
+          value={search}
           className="w-[90%] text-[16px] bg-[#F9FBFF] h-full outline-none pl-2 flex flex-col content-center"
         />
-        {searchUser && (
+        {search && (
           <FontAwesomeIcon
             icon={faCircleXmark}
             size="1x"
             id="close-icon"
             onClick={() => {
-              setSearchUser('');
-              setLoadUserChats([]);
+              setSearch('');
             }}
           />
         )}
       </div>
-      {searchUser && (
-        <div className="contacts overflow-y-scroll h-[240px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
-          {loading ? (
-            searchUser && <LoadingCompoent />
+      {search && (
+        <div className="contacts overflow-y-scroll h-[400px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
+          {isLoading ? (
+            search && <LoadingCompoent />
           ) : (
             <div>
-              {loadUserChats?.length !== 0 ? (
+              {dataSearch?.data.data?.length !== 0 ? (
                 <div>
-                  {loadUserChats?.map((contact, index) => {
+                  {dataSearch?.data.data?.map((contact, index) => {
                     return (
                       <div
-                        className="contact flex flex-row items-center px-2 py-2 cursor-pointer rounded-md border-b-[#79C7C5] border-b-[1px] hover:bg-white/20"
+                        className="contact flex flex-row items-center px-2 py-3 cursor-pointer rounded-md border-b-[#79C7C5] border-b-[1px] hover:bg-white/20"
                         key={index}
                       >
                         <div className="avatar flex flex-row items-center space-x-2 text-lg">
