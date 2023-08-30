@@ -1,4 +1,4 @@
-const { UploadMiddleware } = require('../middlewares/upload');
+const { UploadMiddleware } = require('../controllers/upload');
 
 const multer = require('multer');
 const router = require('express').Router();

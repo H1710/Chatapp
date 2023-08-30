@@ -1,19 +1,12 @@
 const {
-  FriendInvitationMiddleware,
-} = require('../middlewares/friendInvitation');
+  FriendInvitationController,
+} = require('../controllers/friendInvitation');
 
 const router = require('express').Router();
 
-router.get('/:userId', FriendInvitationMiddleware.getFriendRequests);
-router.get('/me-send/:userId', FriendInvitationMiddleware.getAllRequestsUserSend);
-router.post('/send/', FriendInvitationMiddleware.sendFriendRequest);
-router.post(
-  '/accept/:inviteId',
-  FriendInvitationMiddleware.acceptFriendRequest
-);
-router.post(
-  '/cancelled/:inviteId',
-  FriendInvitationMiddleware.cancelledFriendRequest
-);
+router.post('/send', FriendInvitationController.sendFriendRequest);
+router.post('/accept', FriendInvitationController.acceptFriendRequest);
+router.post('/cancel', FriendInvitationController.cancelFriendRequest);
+router.post('/recall', FriendInvitationController.recallFriendRequest);
 
 module.exports = router;

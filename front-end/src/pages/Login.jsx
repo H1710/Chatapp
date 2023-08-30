@@ -3,21 +3,37 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { loginRoute } from '../utils/APIRoutes';
+import { loginRoute, refreshRoute } from '../utils/APIRoutes';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
-import { postAPI } from '../utils/FetchData';
+import { useMutation, useQuery } from 'react-query';
+import { getAPI, postAPI } from '../utils/FetchData';
 import Loading from '../components/alert/Loading';
+import { seft } from '../redux/reducers/authReducer';
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [values, setValues] = useState({
-    phone: '',
+    email: '',
     password: '',
   });
 
-  const { auth } = useSelector(state => state);
+  const { isLoading } = useQuery({
+    queryKey: ['refresh_token'],
+    queryFn: () => {
+      return getAPI(refreshRoute);
+    },
+    onSuccess: data => {
+      dispatch(
+        seft({ ...data.data.user, access_token: data.data.access_token })
+      );
+      navigate('/');
+    },
+    onError: error => {
+      toast.error(error.response.data.message, toastOptions);
+    },
+    enabled: localStorage.getItem('signed') === 'chat-app',
+  });
 
   const toastOptions = {
     position: 'top-right',
@@ -27,25 +43,16 @@ function Login() {
     theme: 'light',
   };
 
-  useEffect(() => {
-    if (auth.access_token) {
-      navigate('/');
-    }
-  }, [auth.access_token]);
-
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isLoading: loadingLogin } = useMutation({
     mutationFn: info => {
       return postAPI(loginRoute, info);
     },
     onError: error => {
-      toast.error('Username or password not correct', toastOptions);
+      toast.error(error.response.data.message, toastOptions);
     },
     onSuccess: data => {
-      toast.success('Login success!', toastOptions);
-      dispatch({
-        type: 'AUTH',
-        payload: { ...data.data.data, access_token: data.data.access_token },
-      });
+      toast.success(data.data.message, toastOptions);
+      localStorage.setItem('signed', 'chat-app');
       navigate('/');
     },
   });
@@ -56,12 +63,9 @@ function Login() {
   };
 
   const handleValidation = () => {
-    const { phone, password } = values;
-    if (password === '') {
-      toast.error('Phone is required', toastOptions);
-      return false;
-    } else if (phone === '') {
-      toast.error('Password is required', toastOptions);
+    const { password } = values;
+    if (password < 6) {
+      toast.error('Password needs to be at least 6 characters', toastOptions);
       return false;
     }
     return true;
@@ -72,50 +76,72 @@ function Login() {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-gradient-to-bl from-[#79C7C5] to-[#F9FBFF]">
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <form
-            className="flex flex-col w-[400px] h-[300px] bg-[#F9FBFF] bg-opacity-50 rounded-xl items-center gap-3 py-3 justify-center px-14"
-            onSubmit={e => handleSubmit(e)}
-          >
-            <div className="text-[40px]">
-              <h1>Chat-app</h1>
-            </div>
-            <input
-              className="w-full bg-[#F9FBFF] h-[44px] border-[#777777] border-[2px] outline-none rounded-md p-2"
-              type="tel"
-              placeholder="Phone"
-              name="phone"
-              onChange={e => handleChange(e)}
-            />
-            <input
-              className="w-full bg-[#F9FBFF] h-[44px] border-[#777777] border-[2px] outline-none rounded-md p-2"
-              type="password"
-              placeholder="Password"
-              name="password"
-              onChange={e => handleChange(e)}
-            />
+    <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-[#cdcfd3]">
+      {isLoading || loadingLogin ? (
+        <Loading />
+      ) : (
+        <div class="bg-white w-[400px] m-auto my-10 shadow-md">
+          <div class="py-8 px-8 rounded-xl">
+            <h1 class="font-medium text-2xl text-center">Login</h1>
+            <form class="mt-6" onSubmit={e => handleSubmit(e)}>
+              <div class="my-4 text-sm">
+                <label htmlFor="email" class="block text-black">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  autoFocus
+                  class="rounded-sm px-4 py-3 mt-1 focus:outline-none bg-gray-100 w-full"
+                  placeholder="Email"
+                  name="email"
+                  required
+                  onChange={e => handleChange(e)}
+                />
+              </div>
+              <div class="my-4 text-sm">
+                <label for="password" class="block text-black">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  class="rounded-sm px-4 py-3 mt-1 focus:outline-none bg-gray-100 w-full"
+                  placeholder="Password"
+                  name="password"
+                  required
+                  onChange={e => handleChange(e)}
+                />
+                <div class="flex justify-end mt-2 text-xs text-gray-600">
+                  <a href="#">Forget Password?</a>
+                </div>
+              </div>
 
-            <button
-              className="w-full h-[44px] rounded-xl hover:bg-opacity-95 bg-[#63a09e] text-white"
-              type="submit"
-            >
-              Login
-            </button>
-            <span className="text-[#000] w-full">
-              Don't have an account ?{' '}
-              <Link to="/register" className="text-[#63a09e]">
+              <button
+                type="submit"
+                class="block text-center text-white bg-[#3386ff] p-3 duration-300 rounded-sm hover:bg-[#0068ff] w-full"
+              >
+                Login
+              </button>
+            </form>
+
+            <div class=" gap-2 mt-7">
+              <div>
+                <button class="block text-center text-black p-3 duration-300 rounded-sm hover:bg-slate-200 w-full border border-green">
+                  Google
+                </button>
+              </div>
+            </div>
+            <p class="mt-12 text-sm text-center font-light text-gray-400">
+              {' '}
+              Don't have an account?{' '}
+              <Link to="/register" class="text-black font-medium">
                 {' '}
-                Register
+                Create One{' '}
               </Link>{' '}
-            </span>
-          </form>
-        )}
-      </div>
-    </>
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 export default Login;

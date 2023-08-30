@@ -1,10 +1,21 @@
 const { otpModel } = require('../models/otp');
+const { transportOTP } = require('../utils/OTPutil');
+const User = require('../entities/user');
 
-class otpMiddleware {
+class OTPMiddleware {
   static async sendOTP(req, res, next) {
-    const { username, email } = req.body;
-    const result = await otpModel.sendOTP(username, email);
-    return res.status(result.getStatusCode()).send(result.getData());
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+
+    user.OTPCode = OTP;
+
+    return res.status(200).send('Send OTP successfully');
   }
 
   static async resendOTP(req, res, next) {
@@ -27,4 +38,4 @@ class otpMiddleware {
   }
 }
 
-exports.otpMiddleware = otpMiddleware;
+exports.OTPMiddleware = OTPMiddleware;

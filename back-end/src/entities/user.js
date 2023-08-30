@@ -1,31 +1,22 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  fullname: {
+  firstname: {
     type: String,
-    required: true,
-    max: 100,
+    default: '',
   },
-  username: {
+  lastname: {
     type: String,
-    required: true,
-    unique: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-    unique: true,
-    length: 10,
+    default: '',
   },
   email: {
     type: String,
-    // required: true,
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    required: true,
-    min: 8,
+    // required: true,
   },
   avatar: {
     contentType: {
@@ -35,10 +26,12 @@ const userSchema = new mongoose.Schema({
       type: String,
     },
   },
-  friendIdsList: {
-    type: Array,
-    default: [],
-  },
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'FriendInvitation',
+    },
+  ],
   chatroom: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -47,6 +40,10 @@ const userSchema = new mongoose.Schema({
   ],
   offlineAt: {
     type: Date,
+  },
+  OTPCode: {
+    type: Number,
+    default: 0,
   },
 });
 

@@ -7,56 +7,76 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Navigation from '../components/Navigation';
 import SetInfo from '../components/SetInfo';
+import { useQuery } from 'react-query';
+import { getAPI } from '../utils/FetchData';
+import { ToastContainer, toast } from 'react-toastify';
+import { refreshRoute } from '../utils/APIRoutes';
+import Loading from '../components/alert/Loading';
+import { seft } from '../redux/reducers/authReducer';
+import logoHome from '../components/logo/logoHome.png';
+import { setSocket } from '../redux/reducers/socketReducer';
+
 function Chat() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [logged, setLogged] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
-  const [currentRoom, setCurrentRoom] = useState(undefined);
   const [navSelect, setNavSelect] = useState('messages');
   const [onlineUsers, setOnlineUsers] = useState(undefined);
   const [offlineUsersTime, setOfflineUsersTime] = useState(undefined);
   const socket = useRef();
 
-  const { auth } = useSelector(state => state);
-  useEffect(() => {
-    if (Object.keys(auth).length !== 0 && !auth.access_token) {
-      navigate('/login');
-    }
-  }, [auth.access_token]);
+  const currentRoom = useSelector(state => state.chatroom.currentRoom);
+
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+  };
 
   useEffect(() => {
-    socket.current = io(process.env.SERVER_URL ?? 'http://localhost:5001');
-    const handleHome = async () => {
-      dispatch({ type: 'SOCKET', payload: socket.current });
-      socket.current.emit('login', { userId: auth._id });
-      socket.current.on('onlineUser', data => {
-        const usersId = Object.values(data.onlineUsers);
-        setOnlineUsers(usersId);
-        setOfflineUsersTime(data.offlineUsersTime);
+    const checkUser = async () => {
+      if (!localStorage.getItem('signed')) {
+        navigate('/login');
+      } else {
+        setLogged(!logged);
+      }
+    };
+    checkUser();
+  }, []);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['refresh_token'],
+    queryFn: () => {
+      return getAPI(refreshRoute);
+    },
+    onSuccess: data => {
+      dispatch(
+        seft({ ...data.data.user, access_token: data.data.access_token })
+      );
+      socket.current = io(process.env.SERVER_URL ?? 'http://localhost:5001');
+      // socket.current = io('https://chat-app-be1.onrender.com/api/v1');
+      socket.current.emit('login', { userId: data.data.user._id });
+      socket.current?.on('onlineUser', data => {
+        setOnlineUsers(data.onlineUsers);
       });
-    };
-    handleHome();
-    return () => {
-      socket.current.close();
-    };
-  }, [auth]);
 
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     if (!localStorage.getItem('logged')) {
-  //       navigate('/login');
-  //     } else {
-  //       const user = await JSON.parse(localStorage.getItem('logged'));
-  //       const data = axios.get(`${getUserRoute}/${user._id}`);
-  //       data.then(res => {
-  //         setCurrentUser(res.data.data);
-  //       });
-  //     }
-  //   };
-  //   checkUser();
-  // }, []);
-  // console.log(notification);
+      dispatch(setSocket(socket.current));
+    },
+    onError: error => {
+      toast.error(error.response.data.message, toastOptions);
+    },
+    enabled: logged,
+  });
+
+  useEffect(() => {
+    return () => {
+      socket.current?.close();
+    };
+  }, []);
 
   // useEffect(() => {
   //   const handleNotification = async () => {
@@ -70,36 +90,53 @@ function Chat() {
   //   handleNotification();
   // }, []);
 
-  const handleChatChange = (chatRoomId, userChat) => {
-    setCurrentChat(userChat);
-    setCurrentRoom(chatRoomId);
-  };
-
   const handleSetNav = options => {
     setNavSelect(options);
   };
 
-  return (
-    <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-gradient-to-r from-[#79C7C5] to-[#F9FBFF] lg:px-[50px] py-[30px]">
+  return isLoading || !logged ? (
+    <Loading />
+  ) : (
+    <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-[#cdcfd3]">
       <Navigation handleSetNav={handleSetNav} navSelect={navSelect} />
-      <Contacts
-        contacts={contacts}
-        changeChat={handleChatChange}
-        currentRoom={currentRoom}
-        socket={socket}
-        onlineUsers={onlineUsers}
-        navSelect={navSelect}
-      />
       {navSelect === 'info' ? (
         <SetInfo />
       ) : (
-        <ChatContainer
-          navSelect={navSelect}
-          currentChat={currentChat}
-          currentRoom={currentRoom}
-          offlineUsersTime={offlineUsersTime}
-          onlineUsers={onlineUsers}
-        />
+        <>
+          <Contacts
+            contacts={contacts}
+            currentRoom={currentRoom}
+            socket={socket}
+            onlineUsers={onlineUsers}
+            navSelect={navSelect}
+          />
+
+          <div
+            className={`${
+              navSelect === 'search-friends' || navSelect === 'notifications'
+                ? 'md:w-0'
+                : 'md:w-[75%]'
+            } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
+          >
+            {currentRoom ? (
+              <ChatContainer
+                currentChat={currentChat}
+                onlineUsers={onlineUsers}
+              />
+            ) : (
+              <div className="flex justify-center items-center h-full">
+                <img
+                  src={logoHome}
+                  alt=""
+                  className="w-[5rem] h-[5rem] flex items-center content-center"
+                />
+                <h2 data-text="CHAT_APP" className="text-[3rem] font-light">
+                  CHAT_APP
+                </h2>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

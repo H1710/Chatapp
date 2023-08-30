@@ -1,34 +1,33 @@
 export const host = process.env.SERVER_URL ?? 'http://localhost:5001/api/v1';
-// export const host = 'http://localhost:5001/api/v1';
+// export const host = 'https://chat-app-be1.onrender.com/api/v1';
 
 export const registerRoute = `${host}/user/register`;
+export const firstStepRegisterationRoute = `${host}/auth/first-step-registeration`;
+export const confirmOTPRoute = `${host}/auth/submitOTP`;
+export const setInfoRoute = `${host}/auth/setInfo`;
+export const loginRoute = `${host}/auth/login`;
+export const refreshRoute = `${host}/auth/refresh_token`;
+
 export const avatarRoute = `${host}/upload`;
-export const loginRoute = `${host}/user/login`;
 export const logoutRoute = `${host}/user/logout`;
-export const refreshTokenRoute = `${host}/refresh_token`;
-export const getUserRoute = `${host}/user`;
 export const changeInfoRoute = `${host}/user/change-info`;
-export const getAllContacts = `${host}/user/get-contacts`;
-export const getFriendList = `${host}/user/get-friendlist`;
-export const getAllUsers = `${host}/user/get-all-users`;
 
 export const sendOTPRoute = `${host}/otp/send`;
 export const resendOTPRoute = `${host}/otp/resend`;
-export const confirmOTPRoute = `${host}/otp/confirm`;
 
-export const searchUserByPhoneRoute = `${host}/search/phone`;
 export const searchUserByFullnameRoute = `${host}/search/fullname`;
 
-export const sendRequestRoute = `${host}/invite/send/`;
-export const getRequestRoute = `${host}/invite`;
-export const getRequestSendedRoute = `${host}/invite/me-send`;
+export const sendRequestRoute = `${host}/invite/send`;
 export const acceptRequestRoute = `${host}/invite/accept`;
-export const cancelledRequestRoute = `${host}/invite/cancelled`;
+export const cancelRequestRoute = `${host}/invite/cancel`;
+export const recallRequestRoute = `${host}/invite/recall`;
 
-export const getMessagesRoute = `${host}/message`;
-export const addMessageRoute = `${host}/message/add`;
+export const getChatroomMessages = `${host}/chatroom`;
+export const sendMessageRoute = `${host}/message/send`;
 
 export const createChatroomRoute = `${host}/chatroom/create`;
+
+export const getNotificationsRoute = `${host}/user/get-notifications`;
 
 export const allUsersRoute = `${host}/user/allusers`;
 export const getAllMessageRoute = `${host}/messages/getmsg`;

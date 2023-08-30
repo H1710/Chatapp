@@ -1,242 +1,164 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
-import {
-  getRequestRoute,
-  acceptRequestRoute,
-  cancelledRequestRoute,
-} from '../utils/APIRoutes';
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { useQuery } from 'react-query';
-import { getUsers } from '../apis/user.api';
 import LoadingCompoent from './alert/LoadingCompoent';
+import { getAPI, postAPI } from '../utils/FetchData';
+import { useMutation, useQuery } from 'react-query';
+import {
+  acceptRequestRoute,
+  cancelRequestRoute,
+  getNotificationsRoute,
+} from '../utils/APIRoutes';
 const Notification = () => {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [currentUserRequest, setCurrentUserRequest] = useState([]);
   const [requestAccepted, setRequestAccepted] = useState([]);
   const [requestCancelled, setRequestCancelled] = useState([]);
   // const { socket } = useSelector(state => state);
-  const { auth } = useSelector(state => state);
-  const { data: allUser, isFetching } = useQuery({
-    queryKey: ['getUsers'],
-    queryFn: () => getUsers(),
-    staleTime: 10 * (60 * 1000),
-    cacheTime: 15 * (60 * 1000),
+  const auth = useSelector(state => state.auth.auth);
+
+  const {
+    data: dataNotifications,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => {
+      return getAPI(`${getNotificationsRoute}/${auth._id}`);
+    },
+    staleTime: 10 * 1000,
+    cacheTime: 5 * 60 * 1000,
   });
 
-  useLayoutEffect(() => {
-    const handleRequest = async () => {
-      const data = await axios.get(`${getRequestRoute}/${auth?._id}`);
-      setCurrentRequest(prev => [...prev, ...data.data.data]);
-      let checkUserRequest = [];
-      allUser.data.users.forEach(user => {
-        checkUserRequest[user._id] = user;
-      });
-      setCurrentUserRequest(
-        data.data.data.map(user => checkUserRequest[user.senderId])
-      );
-    };
-    handleRequest();
-  }, []);
-
-  const handleAcceptedRequest = async id => {
-    let inviteId = '';
-    currentRequest.forEach(request => {
-      if (request.senderId === id) {
-        inviteId = request._id;
-        return;
-      }
-    });
-    const message = await axios.post(`${acceptRequestRoute}/${inviteId}`);
-    if (message.status === 200) {
-      setRequestAccepted(prev => [...prev, id]);
-    }
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
   };
 
-  const handleCancelledRequest = async id => {
-    let inviteId = '';
-    currentRequest.forEach(request => {
-      if (request.senderId === id) {
-        inviteId = request._id;
-        return;
-      }
+  const { mutate: cancelRequest, isLoading: loadingCancelRequest } =
+    useMutation({
+      mutationFn: info => {
+        return postAPI(cancelRequestRoute, info);
+      },
+      onError: error => {
+        toast.error(error.response.data.message, toastOptions);
+      },
+      onSuccess: data => {
+        toast.success(data.data.message, toastOptions);
+      },
     });
-    const message = await axios.post(`${cancelledRequestRoute}/${inviteId}`);
-    if (message.status === 200) {
-      setRequestCancelled(prev => [...prev, id]);
-    }
+
+  const handleCancelRequest = async sender => {
+    try {
+      await cancelRequest({
+        myId: auth._id,
+        senderId: sender.senderId._id,
+      });
+      sender.isCancel = 0;
+    } catch (err) {}
+  };
+
+  const { mutate: acceptRequest, isLoading: loadingAcceptRequest } =
+    useMutation({
+      mutationFn: info => {
+        return postAPI(acceptRequestRoute, info);
+      },
+      onError: error => {
+        toast.error(error.response.data.message, toastOptions);
+      },
+      onSuccess: data => {
+        toast.success(data.data.message, toastOptions);
+      },
+    });
+
+  const handleAcceptRequest = async sender => {
+    try {
+      await acceptRequest({
+        myId: auth._id,
+        senderId: sender.senderId._id,
+      });
+      sender.status = 3;
+    } catch (err) {}
   };
 
   return (
     <>
-      {isFetching ? (
+      {isLoading ? (
         <LoadingCompoent />
       ) : (
-        <Container>
-          <div className="search-user w-full">
-            {currentUserRequest && currentUserRequest.length !== 0 ? (
-              <div className="flex flex-col gap-2 overflow-y-scroll h-[160px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
-                {currentUserRequest.map((contact, index) => {
-                  return (
-                    <div
-                      className="contact flex flex-row bg-[#ffffff30] max-h-[4rem] h-[4rem] w-full rounded-md p-3 items-center justify-between"
-                      key={index}
-                    >
-                      <div className="flex flex-row items-center justify-center gap-3">
-                        {contact.avatar ? (
-                          <img
-                            src={
-                              'data:image/png;base64, ' +
-                              contact.avatar.imageBase64
-                            }
-                            alt=""
-                            className="rounded-full h-[50px] w-[50px]"
-                          />
-                        ) : (
-                          <div className="text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]">
-                            <p>{contact?.fullname[0]}</p>
-                          </div>
-                        )}
+        <div className="w-full">
+          {dataNotifications.data?.user &&
+          dataNotifications.data?.user.friends.length !== 0 ? (
+            <div className="flex flex-col gap-2 overflow-y-scroll h-[160px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
+              {dataNotifications.data?.user.friends.map((contact, index) => {
+                return (
+                  <div
+                    className="flex flex-row items-center px-3 py-3 cursor-pointer border-b-[1px] hover:bg-white/20 gap-2 justify-between"
+                    key={index}
+                  >
+                    <div className="flex flex-row items-center gap-2 truncate">
+                      {contact.senderId.avatar ? (
+                        <img
+                          src={
+                            'data:image/png;base64, ' +
+                            contact?.senderId.avatar?.imageBase64
+                          }
+                          alt=""
+                          className="w-[50px] h-[50px] rounded-full"
+                        />
+                      ) : (
+                        <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
+                          <p>{contact?.senderId.firstname[0]}</p>
+                        </div>
+                      )}
 
-                        <h1 className="text-lg">
-                          {contact?.fullname.length > 15
-                            ? contact.fullname.substring(0, 15) + '...'
-                            : contact.fullname}
-                        </h1>
-                      </div>
-
-                      <div className="username">
-                        {requestAccepted.includes(contact._id) ? (
-                          <div className="text-lg">Accepted</div>
-                        ) : requestCancelled.includes(contact._id) ? (
-                          <div className="text-lg">Cancelled</div>
-                        ) : (
-                          <div className="flex flex-row gap-3">
-                            <FontAwesomeIcon
-                              onClick={() => handleAcceptedRequest(contact._id)}
-                              icon={faCheck}
-                              className="text-2xl cursor-pointer"
-                            />
-                            <FontAwesomeIcon
-                              onClick={() =>
-                                handleCancelledRequest(contact._id)
-                              }
-                              icon={faXmark}
-                              className="text-2xl cursor-pointer"
-                            />
-                          </div>
-                        )}
-                      </div>
+                      <p className=" text-lg text-[#33485c] flex-1 font-normal truncate text-center">
+                        {contact?.senderId.firstname +
+                          ' ' +
+                          contact?.senderId.lastname}
+                      </p>
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p>Nothing</p>
-            )}
-          </div>
-        </Container>
+
+                    <div className="flex gap-3">
+                      {contact.status === 3 ? (
+                        <p>Accepted</p>
+                      ) : contact.status === 0 ? (
+                        <p>Cancelled</p>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => {
+                              handleAcceptRequest(contact);
+                            }}
+                            className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+                          >
+                            Agree
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleCancelRequest(contact);
+                            }}
+                            className="w-20 h-10 bg-[#eaedf0] hover:bg-[#dfe2e7] text-center"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>Nothing</p>
+          )}
+        </div>
       )}
     </>
   );
 };
-
-const Container = styled.div`
-  .search-user {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    .contacts {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow: auto;
-      margin-top: 1rem;
-      border-bottom: 1px solid #777777;
-      &::-webkit-scrollbar {
-        width: 0.2rem;
-        &-thumb {
-          background-color: black;
-          width: 0.1rem;
-          border-radius: 1rem;
-        }
-      }
-      div {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        .contact {
-          background-color: #ffffff30;
-          max-height: 4rem;
-          height: 4rem;
-          width: 100%;
-          cursor: pointer;
-          border-radius: 0.2rem;
-          padding: 0.4rem;
-          gap: 1rem;
-          align-items: center;
-          display: flex;
-          flex-direction: row;
-          // justify-content: space-between;
-          transition: 0.5s ease-in-out;
-          .avatar {
-            display: flex;
-            justify-content: flex-start;
-            height: 3rem;
-            width: 3rem;
-            margin-right: 1rem;
-            img {
-              height: 3rem;
-              width: 3rem;
-              object-fit: cover;
-              border-radius: 999rem;
-            }
-            
-          }
-          h3 {
-            color: #777777;
-            font-weight: 400;
-            display: flex;
-            justify-content: flex-start;
-            flex: 1;
-          }
-          .username {
-            margin-right: 0.4rem;
-            // width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            width: 1.5rem;
-            
-            div {
-              display: flex;
-              justify-content: flex-end;
-              cursor: pointer;
-              z-index: 2;
-              
-              div {
-                display: flex;
-                flex-direction: row;
-                font-size: 1.2rem;
-                gap: 1rem;
-              }
-            }
-          }
-        }
-  }
-
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
-    gap: 0.5rem;
-    .username {
-      h2 {
-        font-size: 1rem;
-      }
-    }
-  }
-`;
 
 export default Notification;

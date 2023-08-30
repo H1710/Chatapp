@@ -1,10 +1,17 @@
-const socketReducer = (state = null, action) => {
-  switch (action.type) {
-    case 'SOCKET':
-      return action.payload;
-    default:
-      return state;
-  }
-};
+import { createSlice } from '@reduxjs/toolkit';
 
-export default socketReducer;
+export const SocketSlice = createSlice({
+  name: 'socket',
+  initialState: {
+    socket: {},
+  },
+  reducers: {
+    setSocket: (state, action) => {
+      state.socket = action.payload;
+    },
+  },
+});
+
+export const { setSocket } = SocketSlice.actions;
+
+export default SocketSlice.reducer;

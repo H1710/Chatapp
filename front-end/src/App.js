@@ -1,22 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useEffect } from 'react';
 import PageRender from './PageRender';
-import { Alert } from './components/alert/Alert';
-import { useDispatch } from 'react-redux';
-import { refreshToken } from './redux/actions/authAction';
-import { useQuery } from 'react-query';
-import { getUsers } from './apis/user.api';
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(refreshToken());
-  }, [dispatch]);
-
   return (
     <Router>
-      <Alert />
       <Routes>
         {/* <Route path="/register" element={<Register />} />
         <Route path="/register/confirmOTP" element={<ConfirmOTP />} />

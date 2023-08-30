@@ -1,17 +1,15 @@
-const { auth } = require('../middlewares/auth');
-const { UserMiddleware } = require('../middlewares/user');
+const { AuthController } = require('../controllers/auth');
+const { UserController } = require('../controllers/user');
 
 const router = require('express').Router();
 
-router.post('/login', UserMiddleware.login);
-router.get('/logout', UserMiddleware.logout);
-router.post('/register', UserMiddleware.register);
-router.get('/get-all-users', UserMiddleware.getAllUsers);
-router.get('/get-contacts/:id', UserMiddleware.getAllContacts);
-router.get('/get-friendlist/:id', UserMiddleware.getFriendsList);
-router.get('/:userId', UserMiddleware.getUserById);
-router.post('/change-password', UserMiddleware.changePassword);
-router.post('/forgot-password', UserMiddleware.forgotPassword);
-router.patch('/change-info', auth, UserMiddleware.changeInfo);
+router.get('/get-all-users', UserController.getAllUsers);
+router.get('/get-notifications/:userId', UserController.getNotifications);
+router.get('/get-contacts', UserController.getAllContacts);
+router.get('/get-friendlist/:id', UserController.getFriendsList);
+router.get('/:userId', UserController.getUserById);
+router.post('/change-password', UserController.changePassword);
+router.post('/forgot-password', UserController.forgotPassword);
+router.patch('/change-info', AuthController.auth, UserController.changeInfo);
 
 module.exports = router;

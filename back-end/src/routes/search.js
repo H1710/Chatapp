@@ -1,9 +1,7 @@
-const { SearchMiddleware } = require('../middlewares/search');
+const { SearchController } = require('../controllers/search');
 
 const router = require('express').Router();
 
-router.post('/fullname', SearchMiddleware.findByFullname);
-router.post('/phone', SearchMiddleware.findByPhone);
-router.post('/email', SearchMiddleware.findByEmail);
+router.get('/fullname/:userId/:fullname', SearchController.findByFullname);
 
 module.exports = router;

@@ -1,28 +1,24 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUserPlus,
-  faCircleXmark,
-  faSeedling,
-} from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import {
   sendRequestRoute,
   searchUserByFullnameRoute,
-  getRequestSendedRoute,
-  getAllUsers,
+  cancelRequestRoute,
+  acceptRequestRoute,
+  recallRequestRoute,
 } from '../utils/APIRoutes';
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
-import { postAPI } from '../utils/FetchData';
+import { getAPI, postAPI } from '../utils/FetchData';
 import useDebounce from '../hooks/useDebounce';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 function SearchUser({ socket }) {
   const [currentRequest, setCurrentRequest] = useState([]);
   const [search, setSearch] = useState('');
 
-  const { auth } = useSelector(state => state);
+  const auth = useSelector(state => state.auth.auth);
 
   const keySearch = useDebounce(search, 500);
 
@@ -34,47 +30,142 @@ function SearchUser({ socket }) {
     queryKey: ['search', keySearch],
     queryFn: () => {
       if (keySearch) {
-        return postAPI(`${searchUserByFullnameRoute}`, {
-          fullname: keySearch,
-        });
+        return getAPI(`${searchUserByFullnameRoute}/${auth._id}/${keySearch}`);
       }
     },
-    staleTime: 3 * (60 * 1000),
-    cacheTime: 5 * (60 * 1000),
+    staleTime: 10 * 1000,
+    cacheTime: 5 * 60 * 1000,
   });
 
-  useLayoutEffect(() => {
-    const handleRequest = async () => {
-      try {
-        const res = await axios.get(`${getRequestSendedRoute}/${auth._id}`);
-        setCurrentRequest(res.data.data);
-      } catch (err) {}
-    };
-    handleRequest();
-  }, []);
+  console.log(dataSearch);
 
-  const handleSendRequest = async receiverId => {
-    const myId = auth._id;
-    const res = await axios.post(sendRequestRoute, {
-      receiverId,
-      myId,
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+  };
+
+  const { mutate: sendRequest, isLoading: loadingSendRequest } = useMutation({
+    mutationFn: info => {
+      return postAPI(sendRequestRoute, info);
+    },
+    onError: error => {
+      toast.error(error.response.data.message, toastOptions);
+    },
+    onSuccess: data => {
+      toast.success(data.data.message, toastOptions);
+    },
+  });
+
+  const handleSendRequest = async receiver => {
+    try {
+      await sendRequest({
+        myId: auth._id,
+        receiverId: receiver._id,
+      });
+
+      receiver.friends.push({
+        senderId: auth._id,
+        receiverId: receiver._id,
+        status: 2,
+      });
+    } catch (err) {}
+
+    // const myId = auth._id;
+    // const res = await axios.post(sendRequestRoute, {
+    //   receiverId,
+    //   myId,
+    // });
+    // socket.current.emit('send-friend-request', {
+    //   receiverId,
+    //   myId,
+    // });
+    // setCurrentRequest(prev => [...prev, { receiverId: receiverId }]);
+  };
+
+  const { mutate: cancelRequest, isLoading: loadingCancelRequest } =
+    useMutation({
+      mutationFn: info => {
+        return postAPI(cancelRequestRoute, info);
+      },
+      onError: error => {
+        toast.error(error.response.data.message, toastOptions);
+      },
+      onSuccess: data => {
+        toast.success(data.data.message, toastOptions);
+      },
     });
-    socket.current.emit('send-friend-request', {
-      receiverId,
-      myId,
+
+  const handleCancelRequest = async sender => {
+    try {
+      await cancelRequest({
+        myId: auth._id,
+        senderId: sender._id,
+      });
+
+      sender.friends = [];
+    } catch (err) {}
+  };
+
+  const { mutate: acceptRequest, isLoading: loadingAcceptRequest } =
+    useMutation({
+      mutationFn: info => {
+        return postAPI(acceptRequestRoute, info);
+      },
+      onError: error => {
+        toast.error(error.response.data.message, toastOptions);
+      },
+      onSuccess: data => {
+        toast.success(data.data.message, toastOptions);
+      },
     });
-    setCurrentRequest(prev => [...prev, { receiverId: receiverId }]);
+
+  const handleAcceptRequest = async sender => {
+    try {
+      await acceptRequest({
+        myId: auth._id,
+        senderId: sender._id,
+      });
+
+      sender.friends[0].status = 3;
+    } catch (err) {}
+  };
+
+  const { mutate: recallRequest, isLoading: loadingrecallRequest } =
+    useMutation({
+      mutationFn: info => {
+        return postAPI(recallRequestRoute, info);
+      },
+      onError: error => {
+        toast.error(error.response.data.message, toastOptions);
+      },
+      onSuccess: data => {
+        toast.success(data.data.message, toastOptions);
+      },
+    });
+
+  const handleRecallRequest = async receiver => {
+    try {
+      await recallRequest({
+        myId: auth._id,
+        receiverId: receiver._id,
+      });
+
+      receiver.friends[0].status = 0;
+    } catch (err) {}
   };
 
   return (
-    <div className="w-full">
-      <div className="search-input w-full flex flex-row items-center h-10 bg-[#F9FBFF] rounded-xl overflow-hidden">
+    <div className="w-full px-2">
+      <div className="flex flex-row items-center h-10 overflow-hidden bg-[#dbdfe2] pr-2 mt-2">
         <input
           type="tel"
-          placeholder="Search..."
+          placeholder="Search by fullname"
           onChange={e => setSearch(e.target.value)}
           value={search}
-          className="w-[90%] text-[16px] bg-[#F9FBFF] h-full outline-none pl-2 flex flex-col content-center"
+          className="flex-1 text-[16px] bg-[#dbdfe2] h-full  pl-2 flex flex-col content-center outline-none"
         />
         {search && (
           <FontAwesomeIcon
@@ -93,54 +184,77 @@ function SearchUser({ socket }) {
             search && <LoadingCompoent />
           ) : (
             <div>
-              {dataSearch?.data.data?.length !== 0 ? (
+              {dataSearch?.data.users?.length !== 0 ? (
                 <div>
-                  {dataSearch?.data.data?.map((contact, index) => {
+                  {dataSearch?.data.users?.map((contact, index) => {
                     return (
                       <div
-                        className="contact flex flex-row items-center px-2 py-3 cursor-pointer rounded-md border-b-[#79C7C5] border-b-[1px] hover:bg-white/20"
+                        className="flex flex-row items-center px-2 py-3 cursor-pointer border-b-[1px] hover:bg-white/20 gap-2"
                         key={index}
                       >
-                        <div className="avatar flex flex-row items-center space-x-2 text-lg">
+                        <div className="flex flex-row items-center gap-2 truncate">
                           {contact.avatar ? (
                             <img
                               src={
                                 'data:image/png;base64, ' +
-                                contact.avatar?.imageBase64
+                                contact?.avatar?.imageBase64
                               }
                               alt=""
                               className="w-[50px] h-[50px] rounded-full"
                             />
                           ) : (
-                            <div className="text-[30px] text-[rgb(249,251,255)] h-[50px] w-[50px] flex items-center justify-center rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]">
-                              <p>{contact?.fullname[0]}</p>
+                            <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
+                              <p>{contact?.firstname[0]}</p>
                             </div>
                           )}
 
-                          <h3>
-                            {contact?.fullname.length > 15
-                              ? contact.fullname.substring(0, 15) + '...'
-                              : contact.fullname}
-                          </h3>
+                          <p className=" text-lg text-[#33485c] flex-1 font-normal truncate text-center">
+                            {contact?.firstname + ' ' + contact?.lastname}
+                          </p>
                         </div>
-                        <div className="username flex flex-row flex-1 justify-end mr-2">
-                          {auth.friendIdsList.includes(contact._id) ? (
-                            <p>Friend</p>
-                          ) : currentRequest.filter(
-                              sender => sender.receiverId === contact._id
-                            ).length > 0 ? (
-                            <p>Sended</p>
-                          ) : contact._id === auth._id ? (
-                            <FontAwesomeIcon icon={faSeedling} size="1x" />
-                          ) : (
-                            <FontAwesomeIcon
+                        <div className="flex flex-row flex-1 justify-end">
+                          {contact._id === auth._id ? (
+                            <button className="w-36 h-10 text-center"></button>
+                          ) : contact.friends.length === 0 ||
+                            contact.friends[0].status === 0 ? (
+                            <button
                               onClick={() => {
-                                handleSendRequest(contact._id);
+                                handleSendRequest(contact);
                               }}
-                              icon={faUserPlus}
-                              size="1x"
-                              className="cursor-pointer"
-                            />
+                              className="w-32 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+                            >
+                              Addfriend
+                            </button>
+                          ) : contact.friends[0].status === 3 ? (
+                            <div>Friend</div>
+                          ) : contact.friends[0].senderId === auth._id ? (
+                            <button
+                              onClick={() => {
+                                handleRecallRequest(contact);
+                              }}
+                              className="w-36 h-10 bg-[#eaedf0] hover:bg-[#dfe2e7] text-center"
+                            >
+                              Cancel request
+                            </button>
+                          ) : (
+                            <div className="flex gap-3">
+                              <button
+                                onClick={() => {
+                                  handleAcceptRequest(contact);
+                                }}
+                                className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+                              >
+                                Agree
+                              </button>
+                              <button
+                                onClick={() => {
+                                  handleCancelRequest(contact);
+                                }}
+                                className="w-20 h-10 bg-[#eaedf0] hover:bg-[#dfe2e7] text-center"
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -148,7 +262,7 @@ function SearchUser({ socket }) {
                   })}
                 </div>
               ) : (
-                <p>User not found</p>
+                <p className="mt-2 ml-2">User not found</p>
               )}
             </div>
           )}

@@ -1,11 +1,33 @@
+const User = require('../entities/user');
 const { UserModel } = require('../models/user');
 const { ControllerService } = require('../utils/decorators');
 const { Token } = require('../utils/generateToken');
 
-class UserMiddleware {
+class UserController {
+  static async getNotifications(req, res, next) {
+    try {
+      const { userId } = req.params;
+
+      const user = await User.findById(userId).populate({
+        path: 'friends',
+        match: { $and: [{ receiverId: userId }] },
+        populate: {
+          path: 'senderId',
+          model: 'User',
+          select: '_id firstname lastname',
+        },
+      });
+      return res.status(200).send({ user });
+    } catch (Err) {
+      res
+        .status(500)
+        .send({ message: 'Something went wrong cannot get notifications' });
+    }
+  }
+
   static async login(req, res, next) {
-    const { phone, password } = req.body;
-    const result = await UserModel.login(phone, password);
+    const { email, password } = req.body;
+    const result = await UserModel.login(email, password);
     if (result.getStatusCode() === 200) {
       const refresh_token = await Token.generateRefreshToken({
         id: result.data.data._id,
@@ -115,9 +137,21 @@ class UserMiddleware {
   }
 
   static async getAllContacts(req, res, next) {
-    const { id } = req.params;
-    const result = await UserModel.getAllContacts(id);
-    return res.status(result.getStatusCode()).send(result.getData());
+    try {
+      const { myId } = req.body;
+      const myUser = await User.findById(myId).populate({
+        path: 'chatroom',
+        populate: {
+          path: 'userIds',
+          model: 'User',
+          select: '_id firstname lastname',
+        },
+      });
+
+      return res.status(200).send({ myUser });
+    } catch (err) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
   }
 
   static async getUserById(req, res, next) {
@@ -126,4 +160,4 @@ class UserMiddleware {
     return res.status(result.getStatusCode()).send(result.getData());
   }
 }
-exports.UserMiddleware = UserMiddleware;
+exports.UserController = UserController;

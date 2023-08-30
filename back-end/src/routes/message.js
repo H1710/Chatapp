@@ -1,10 +1,9 @@
-const { MessageMiddleware } = require('../middlewares/message');
+const { MessageController } = require('../controllers/message');
 
 const router = require('express').Router();
 
-router.post('/:chatRoomId', MessageMiddleware.getMessages);
-router.post('/add/:chatRoomId', MessageMiddleware.addMessage);
-router.post('/edit/:msgId', MessageMiddleware.editMessage);
-router.post('/delete/:msgId', MessageMiddleware.deleteMessage);
+router.post('/send', MessageController.sendMessage);
+router.post('/edit/:msgId', MessageController.editMessage);
+router.post('/delete/:msgId', MessageController.deleteMessage);
 
 module.exports = router;

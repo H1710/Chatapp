@@ -6,7 +6,8 @@ const messageRoute = require('./message');
 const otpRoute = require('./otp');
 const searchRoute = require('./search');
 const chatroomRoute = require('./chatroom');
-const { TokenMiddleware } = require('../middlewares/rf_token');
+const authRoute = require('./auth');
+const { TokenMiddleware } = require('../controllers/rf_token');
 const User = require('../entities/user');
 
 router.use('/upload', uploadRoute);
@@ -16,6 +17,7 @@ router.use('/otp', otpRoute);
 router.use('/invite', invitationRoute);
 router.use('/search', searchRoute);
 router.use('/chatroom', chatroomRoute);
+router.use('/auth', authRoute);
 router.get('/refresh_token', TokenMiddleware.refreshToken);
 
 router.get('/hello', async (req, res) => {

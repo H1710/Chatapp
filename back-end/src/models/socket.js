@@ -9,18 +9,20 @@ module.exports = {
   socketConnect: async server => {
     const io = socket(server, {
       cors: {
-        origin: 'http://localhost:3000',
+        origin:
+          process.env.CLIENT_SOCKET_ENDPOINT ??
+          'https://chat-app-fe-ruddy.vercel.app',
         credentials: true,
       },
     });
     // io.set('transports', ['websocket']);
-    const onlineUsers = {};
+    const socketUser = {};
     const offlineUsersTime = {}; // key is id of user, value is time offline
     const globalUsers = {};
     io.on('connection', socket => {
       // console.log('connected');
       socket.on('join-room', data => {
-        socket.join(data);
+        socket.join(data.chatRoomId);
       });
 
       socket.on('send-msg', async data => {
@@ -28,29 +30,30 @@ module.exports = {
       });
 
       socket.on('login', function (data) {
-        console.log('a user ' + data.userId + ' connected');
-        onlineUsers[socket.id] = data.userId;
+        // console.log('a user ' + data.userId + ' connected');
+        socketUser[socket.id] = data.userId;
         globalUsers[data.userId] = socket.id;
         delete offlineUsersTime[data.userId];
         // saving userId to object with socket ID
         io.emit('onlineUser', {
-          onlineUsers: onlineUsers,
+          onlineUsers: globalUsers,
           offlineUsersTime: offlineUsersTime,
         });
       });
 
       socket.on('disconnect', async function () {
-        console.log('user ' + onlineUsers[socket.id] + ' disconnected');
-        offlineUsersTime[onlineUsers[socket.id]] = new Date();
+        // console.log('user ' + socketUser[socket.id] + ' disconnected');
+        offlineUsersTime[socketUser[socket.id]] = new Date();
         // remove saved socket from users object
-        const user = await User.findById(onlineUsers[socket.id]);
+        const user = await User.findById(socketUser[socket.id]);
         if (user) {
           user.offlineAt = new Date();
           await user.save();
         }
-        await delete onlineUsers[socket.id];
+        await delete globalUsers[socketUser[socket.id]];
+        await delete socketUser[socket.id];
         await io.emit('onlineUser', {
-          onlineUsers: onlineUsers,
+          onlineUsers: globalUsers,
           offlineUsersTime: offlineUsersTime,
         });
 

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineMessage, AiFillSetting } from 'react-icons/ai';
+import { AiOutlineMessage, AiFillMessage, AiFillSetting } from 'react-icons/ai';
 import { FiBell } from 'react-icons/fi';
 import { RxMagnifyingGlass } from 'react-icons/rx';
 import { MdOutlineSettings } from 'react-icons/md';
 import { AiOutlineUser } from 'react-icons/ai';
+import { BiSolidBell } from 'react-icons/bi';
+import { PiMagnifyingGlassFill } from 'react-icons/pi';
 import { FiLogOut } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 
@@ -36,38 +38,50 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
     }
   }, [socket?.current]);
   return (
-    <div className="w-[50px] h-[95%] justify-between flex flex-col bg-[#ffffff] bg-opacity-70 rounded-l-xl overflow-hidden border-r-2 border-[#79C7C5] shadow-sm">
+    <div className="w-[80px] h-full justify-between flex flex-col bg-[#2196f3] overflow-hidden border-black shadow-sm">
       <div className="h-[42%] justify-start flex flex-col">
         <div
           onClick={() => {
             handleSetNav('messages');
           }}
-          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center ${
-            navSelect === 'messages' ? 'bg-[#79C7C5] text-[#F9FBFF]' : ''
-          } flex-1`}
+          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white ${
+            navSelect === 'messages' ? 'bg-[#0043a6]' : ''
+          } flex-1 hover:bg-[#0043a6]`}
         >
-          <AiOutlineMessage size={30} />
+          {navSelect === 'messages' ? (
+            <AiFillMessage size={30} />
+          ) : (
+            <AiOutlineMessage size={30} />
+          )}
         </div>
         <div
           onClick={() => {
             handleSetNav('search-friends');
           }}
-          className={`flex-1 flex cursor-pointer items-center justify-center font-bold ${
-            navSelect === 'search-friends' ? 'bg-[#79C7C5] text-[#F9FBFF]' : ''
-          }`}
+          className={`flex-1 flex cursor-pointer items-center justify-center font-bold text-white ${
+            navSelect === 'search-friends' ? 'bg-[#0043a6]' : ''
+          } hover:bg-[#0043a6]`}
         >
-          <RxMagnifyingGlass size={35} />
+          {navSelect === 'search-friends' ? (
+            <PiMagnifyingGlassFill size={35} />
+          ) : (
+            <RxMagnifyingGlass size={35} />
+          )}
         </div>
         <div
           onClick={() => {
             handleSetNav('notifications');
             setNumberNotes(0);
           }}
-          className={`flex-1 flex cursor-pointer items-center justify-center ${
-            navSelect === 'notifications' ? 'bg-[#79C7C5] text-[#F9FBFF]' : ''
-          }`}
+          className={`flex-1 flex cursor-pointer items-center justify-center text-white ${
+            navSelect === 'notifications' ? 'bg-[#0043a6]' : ''
+          } hover:bg-[#0043a6]`}
         >
-          <FiBell size={30} />
+          {navSelect === 'notifications' ? (
+            <BiSolidBell size={30} />
+          ) : (
+            <FiBell size={30} />
+          )}
           {numberNotes !== 0 && (
             <div className="number-notes">{numberNotes}</div>
           )}
@@ -78,8 +92,8 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
           onClick={() => {
             handleSetNav('info');
           }}
-          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center ${
-            navSelect === 'info' ? 'bg-[#79C7C5] text-[#F9FBFF]' : ''
+          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white ${
+            navSelect === 'info' ? 'bg-[#0043a6]' : ''
           } flex-1`}
         >
           <AiOutlineUser fontSize={30} />
@@ -88,7 +102,7 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
           onClick={() => {
             dispatch({ type: 'ALERT', payload: { logout: true } });
           }}
-          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center`}
+          className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white hover:bg-[#0043a6]`}
         >
           <FiLogOut fontSize={28} />
         </div>
