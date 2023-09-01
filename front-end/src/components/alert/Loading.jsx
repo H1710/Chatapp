@@ -4,88 +4,82 @@ import styled from 'styled-components';
 const Loading = () => {
   return (
     <FormContainer>
-      <div className="d-flex z-30 fixed top-0 left-0 w-100 h-100 text-center align-items-center justify-content-center">
-        <div className="meetup ">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
+      <div class="ring">
+        Loading...
+        <span></span>
       </div>
     </FormContainer>
   );
 };
 
 const FormContainer = styled.div`
-  div {
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: 999;
-  }
-  @-webkit-keyframes meetup {
-    0%,
-    100% {
-      -webkit-transform: rotate(calc(var(--rotation) * 1deg)) translateY(0);
-      transform: rotate(calc(var(--rotation) * 1deg)) translateY(0);
-    }
-    50% {
-      -webkit-transform: rotate(calc(var(--rotation) * 1deg)) translateY(300%);
-      transform: rotate(calc(var(--rotation) * 1deg)) translateY(300%);
-    }
-  }
-  @keyframes meetup {
-    0%,
-    100% {
-      -webkit-transform: rotate(calc(var(--rotation) * 1deg)) translateY(0);
-      transform: rotate(calc(var(--rotation) * 1deg)) translateY(0);
-    }
-    50% {
-      -webkit-transform: rotate(calc(var(--rotation) * 1deg)) translateY(300%);
-      transform: rotate(calc(var(--rotation) * 1deg)) translateY(300%);
-    }
-  }
-
-  .meetup {
-    -webkit-animation: spin 1s infinite linear;
-    animation: spin 1s infinite linear;
-    height: 10px;
-    width: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .meetup div {
-    height: 100%;
+  .ring {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: transparent;
+    border: 3px solid white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 190px;
+    font-size: 28px;
+    color: black;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px #2196f3;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  .ring:before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
     width: 100%;
-    -webkit-animation: meetup 1.25s infinite ease;
-    animation: meetup 1.25s infinite ease;
-    background: black;
-    border-radius: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top: 3px solid #2196f3;
+    border-right: 3px solid #2196f3;
+    border-radius: 50%;
+    animation: animateC 2s linear infinite;
   }
-  .meetup div:nth-child(1) {
-    --rotation: 90;
+  span {
+    display: block;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 50%;
+    width: 50%;
+    height: 4px;
+    background: transparent;
+    transform-origin: left;
+    animation: animate 2s linear infinite;
   }
-  .meetup div:nth-child(2) {
-    --rotation: 180;
+  span:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    top: -6px;
+    right: -8px;
+    box-shadow: 0 0 20px black;
   }
-  .meetup div:nth-child(3) {
-    --rotation: 270;
-  }
-  .meetup div:nth-child(4) {
-    --rotation: 360;
-  }
-
-  @-webkit-keyframes spin {
-    to {
-      -webkit-transform: rotate(360deg);
+  @keyframes animateC {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
       transform: rotate(360deg);
     }
   }
-
-  @keyframes spin {
-    to {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+  @keyframes animate {
+    0% {
+      transform: rotate(45deg);
+    }
+    100% {
+      transform: rotate(405deg);
     }
   }
 `;

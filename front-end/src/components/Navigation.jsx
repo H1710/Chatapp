@@ -94,7 +94,7 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
           }}
           className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white ${
             navSelect === 'info' ? 'bg-[#0043a6]' : ''
-          } flex-1`}
+          } flex-1 hover:bg-[#0043a6]`}
         >
           <AiOutlineUser fontSize={30} />
         </div>

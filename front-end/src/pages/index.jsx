@@ -94,48 +94,53 @@ function Chat() {
     setNavSelect(options);
   };
 
-  return isLoading || !logged ? (
-    <Loading />
-  ) : (
-    <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-[#cdcfd3]">
-      <Navigation handleSetNav={handleSetNav} navSelect={navSelect} />
-      {navSelect === 'info' ? (
-        <SetInfo />
+  return (
+    <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-blue-300 bg-opacity-30">
+      {isLoading || !logged ? (
+        <Loading />
       ) : (
         <>
-          <Contacts
-            contacts={contacts}
-            currentRoom={currentRoom}
-            socket={socket}
-            onlineUsers={onlineUsers}
-            navSelect={navSelect}
-          />
-
-          <div
-            className={`${
-              navSelect === 'search-friends' || navSelect === 'notifications'
-                ? 'md:w-0'
-                : 'md:w-[75%]'
-            } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
-          >
-            {currentRoom ? (
-              <ChatContainer
-                currentChat={currentChat}
+          <Navigation handleSetNav={handleSetNav} navSelect={navSelect} />
+          {navSelect === 'info' ? (
+            <SetInfo />
+          ) : (
+            <>
+              <Contacts
+                contacts={contacts}
+                currentRoom={currentRoom}
+                socket={socket}
                 onlineUsers={onlineUsers}
+                navSelect={navSelect}
               />
-            ) : (
-              <div className="flex justify-center items-center h-full">
-                <img
-                  src={logoHome}
-                  alt=""
-                  className="w-[5rem] h-[5rem] flex items-center content-center"
-                />
-                <h2 data-text="CHAT_APP" className="text-[3rem] font-light">
-                  CHAT_APP
-                </h2>
+
+              <div
+                className={`${
+                  navSelect === 'search-friends' ||
+                  navSelect === 'notifications'
+                    ? 'md:w-0'
+                    : 'md:w-[75%]'
+                } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
+              >
+                {currentRoom ? (
+                  <ChatContainer
+                    currentChat={currentChat}
+                    onlineUsers={onlineUsers}
+                  />
+                ) : (
+                  <div className="flex justify-center items-center h-full">
+                    <img
+                      src={logoHome}
+                      alt=""
+                      className="w-[5rem] h-[5rem] flex items-center content-center"
+                    />
+                    <h2 data-text="CHAT_APP" className="text-[3rem] font-light">
+                      CHAT_APP
+                    </h2>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </>
       )}
     </div>

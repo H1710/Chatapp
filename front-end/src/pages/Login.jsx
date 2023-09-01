@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import 'react-toastify/dist/ReactToastify.css';
 import { loginRoute, refreshRoute } from '../utils/APIRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../utils/FetchData';
 import Loading from '../components/alert/Loading';
+import CircularProgress from '@mui/material/CircularProgress';
 import { seft } from '../redux/reducers/authReducer';
 
 function Login() {
@@ -77,7 +76,7 @@ function Login() {
 
   return (
     <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-[#cdcfd3]">
-      {isLoading || loadingLogin ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <div class="bg-white w-[400px] m-auto my-10 shadow-md">
@@ -90,7 +89,7 @@ function Login() {
                 </label>
                 <input
                   type="email"
-                  autoFocus
+                  autoComplete="off"
                   class="rounded-sm px-4 py-3 mt-1 focus:outline-none bg-gray-100 w-full"
                   placeholder="Email"
                   name="email"
@@ -117,9 +116,17 @@ function Login() {
 
               <button
                 type="submit"
+                disabled={loadingLogin}
                 class="block text-center text-white bg-[#3386ff] p-3 duration-300 rounded-sm hover:bg-[#0068ff] w-full"
               >
-                Login
+                {loadingLogin ? (
+                  <>
+                    Loading...
+                    <CircularProgress size={20} color="inherit" />
+                  </>
+                ) : (
+                  <p>Login</p>
+                )}
               </button>
             </form>
 
@@ -141,6 +148,7 @@ function Login() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

@@ -1,94 +1,52 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiEditAlt } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from 'react-query';
-import { changeInfoRoute } from '../utils/APIRoutes';
-import { patchAPI } from '../utils/FetchData';
-import { toast } from 'react-toastify';
-import Loading from './alert/Loading';
+import { AiOutlineCamera } from 'react-icons/ai';
 import { SlOptions } from 'react-icons/sl';
+import ChangeInfoForm from './ChangeInfoForm';
+import ChangeAvatarForm from './ChangeAvatarForm';
 
 const SetInfo = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth.auth);
-  console.log(auth);
-  const navigate = useNavigate();
-
-  const [values, setValues] = useState({
-    fullname: auth.fullname,
-    username: auth.username,
-  });
-
-  const [edit, setEdit] = useState({
-    fullname: true,
-    username: true,
-    password: true,
-  });
-
-  const toastOptions = {
-    position: 'top-right',
-    autoClose: 3000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: 'light',
-  };
-
-  const handleChange = e => {
-    let value = e.target.files ? e.target.files : e.target.value;
-    setValues({
-      ...values,
-      [e.target.name]: value,
-    });
-  };
-
-  const { mutate, isLoading } = useMutation({
-    mutationFn: info => {
-      return patchAPI(changeInfoRoute, info, auth.access_token);
-    },
-    onError: error => {
-      toast.error(error.response.data.message, toastOptions);
-    },
-    onSuccess: data => {
-      toast.success(data.data.message, toastOptions);
-      dispatch({
-        type: 'AUTH',
-        payload: {
-          ...auth,
-          fullname: values.fullname,
-          username: values.username,
-        },
-      });
-      Object.keys(edit).forEach(v => (edit[v] = true));
-    },
-  });
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    mutate(values);
-  };
+  const [openEditInfo, setOpenEditInfo] = useState(false);
+  const [openEditAvatar, setOpenEditAvatar] = useState(false);
 
   return (
     <>
-      {isLoading && <Loading />}
       <div className="h-full flex-1 bg-white bg-opacity-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
         {/* Header */}
         <div className="border-b-2 border-[#dbdfe2] px-40 shadow-sm">
           <div className=" w-full flex items-center gap-2 mt-6 pb-3 px-10 justify-between border-b border-[#dbdfe2]">
             <div className="flex flex-row gap-10 justify-center items-center">
               {auth.avatar ? (
-                <img
-                  src={'data:image/png;base64, ' + auth.avatar?.imageBase64}
-                  alt={auth.firstname + ' ' + auth.lastname}
-                  className="w-20 h-20 rounded-full shadow-lg"
-                  title={auth.firstname + ' ' + auth.lastname}
-                />
+                <div className="cursor-pointer">
+                  <img
+                    src={'data:image/png;base64, ' + auth.avatar?.imageBase64}
+                    alt={auth.firstname + ' ' + auth.lastname}
+                    className="w-44 h-44 rounded-full"
+                    title={auth.firstname + ' ' + auth.lastname}
+                  />
+                  <div className="absolute bg-black w-full h-1/2 hidden bottom-0 bg-opacity-30 group-hover:flex group-hover:flex-col group-hover:items-center group-hover:bottom-4 group-hover:animate-fade-up">
+                    <AiOutlineCamera size={40} />
+                    <span className="group-hover:block text-lg">Change</span>
+                  </div>
+                </div>
               ) : (
                 <div
-                  className="text-[50px] text-[rgb(249,251,255)] h-44 w-44 flex items-center justify-center rounded-full bg-[#66a4ff]"
+                  className="group cursor-pointer relative overflow-hidden text-[50px] rounded-full text-[rgb(249,251,255)] w-44 h-44 flex items-center justify-center bg-[#66a4ff]"
                   title={auth.firstname + ' ' + auth.lastname}
                 >
                   <p>{auth.firstname[0]}</p>
+                  <div
+                    className="absolute bg-black w-full h-1/2 hidden bottom-0 bg-opacity-30 group-hover:flex group-hover:flex-col group-hover:items-center group-hover:bottom-4 group-hover:animate-fade-up"
+                    onClick={() => {
+                      setOpenEditAvatar(true);
+                    }}
+                  >
+                    <AiOutlineCamera size={40} />
+                    <span className="group-hover:block text-lg">Change</span>
+                  </div>
                 </div>
               )}
 
@@ -98,11 +56,13 @@ const SetInfo = () => {
             </div>
             <div className="flex w-full lg:w-fit justify-end">
               <button
-                className="rounded hover:bg-opacity-95 bg-[#63a09e] text-white font-medium py-2 px-2 flex items-center gap-1"
-                onClick={() => navigate('/setAvatar')}
+                className="rounded hover:bg-opacity-95 bg-gray-200 hover:bg-gray-300  text-black font-medium py-2 px-2 flex items-center gap-1"
+                onClick={() => {
+                  setOpenEditInfo(true);
+                }}
               >
-                <BiEditAlt fontSize={26} />
-                <span>Edit avartar</span>
+                <BiEditAlt fontSize={22} />
+                <span>Edit your info</span>
               </button>
             </div>
           </div>
@@ -211,6 +171,14 @@ const SetInfo = () => {
           </div>
           <div className="bg-blue-400 flex-[7_7_0%]"></div>
         </div>
+        <ChangeInfoForm
+          openEditInfo={openEditInfo}
+          setOpenEditInfo={setOpenEditInfo}
+        />
+        <ChangeAvatarForm
+          openEditAvatar={openEditAvatar}
+          setOpenEditAvatar={setOpenEditAvatar}
+        />
       </div>
     </>
   );
