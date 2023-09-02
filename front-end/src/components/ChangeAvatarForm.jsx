@@ -3,13 +3,92 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSelector } from 'react-redux';
 import { patchAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
-import { changeInfoRoute } from '../utils/APIRoutes';
-import { toast } from 'react-toastify';
+import { avatarRoute, changeInfoRoute } from '../utils/APIRoutes';
+import { toast, ToastContainer } from 'react-toastify';
+import ImageCropDialog from './ImageCropDialog';
 
 const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
-  const handleSubmit = () => {};
   const [selectedFile, setSelectedFile] = useState('');
   const [image, setImage] = useState('');
+  const [avatarImageCrop, setAvatarImageCrop] = useState(null);
+  const [openCrop, setOpenCrop] = useState(false);
+  const auth = useSelector(state => state.auth.auth);
+
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+  };
+
+  const { mutate, isLoading: loadingChange } = useMutation({
+    mutationFn: info => {
+      return patchAPI(avatarRoute, info, auth.access_token);
+    },
+    onError: error => {
+      toast.error(error.response.data.message, toastOptions);
+    },
+    onSuccess: data => {
+      toast.success(data.data.message, toastOptions);
+    },
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    const avatar = new FormData();
+    avatar.append('avatar', selectedFile);
+    avatar.append('username', auth.username);
+    mutate(avatar);
+  };
+
+  const onCancel = () => {
+    setOpenCrop(false);
+  };
+
+  const resetImage = () => {
+    setCroppedImageFor();
+  };
+
+  const setCroppedImageFor = (crop, zoom, aspect, croppedImageUrl) => {
+    setAvatarImageCrop({
+      imageUrl: croppedImageUrl ? croppedImageUrl : image,
+      crop: crop,
+      zoom: zoom,
+      aspect: aspect,
+    });
+    handleImageCrop(croppedImageUrl);
+    setOpenCrop(false);
+  };
+
+  const handleImageCrop = url => {
+    const toDataURL = url =>
+      fetch(url)
+        .then(response => response.blob())
+        .then(
+          blob =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            })
+        );
+    function dataURLtoFile(dataurl, filename) {
+      var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    }
+    toDataURL(url).then(dataUrl => {
+      var fileData = dataURLtoFile(dataUrl, 'imageName.jpg');
+      setSelectedFile(fileData);
+    });
+  };
 
   const handleChange = e => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -72,6 +151,7 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
 
                 <form
                   className="mt-4"
+                  encType="multipart/form-data"
                   onSubmit={e => {
                     handleSubmit(e);
                   }}
@@ -93,17 +173,47 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
                   </div>
                   <div className="flex justify-center">
                     <img
-                      onClick={() => {}}
+                      onClick={() => {
+                        setOpenCrop(true);
+                      }}
                       src={image}
                       alt=""
-                      className="w-44 h-44 rounded-full object-cover"
+                      className="w-44 h-44 rounded-full object-cover border border-gray-300 shadow"
                     />
                   </div>
+                  <div className="flex gap-20 mt-4">
+                    <div
+                      onClick={() => {
+                        setOpenEditAvatar(false);
+                      }}
+                      className="cursor-pointer flex-1 text-center text-black p-3 duration-300 rounded-sm hover:bg-slate-200 w-full border border-green"
+                    >
+                      Cancel
+                    </div>
+                    <button
+                      type="submit"
+                      className="flex-1 text-center text-white bg-gray-800 p-3 duration-300 rounded-sm hover:bg-black"
+                    >
+                      Save
+                    </button>
+                  </div>
                 </form>
+                {openCrop && (
+                  <ImageCropDialog
+                    imageUrl={image}
+                    cropInit={avatarImageCrop?.crop}
+                    zoomInit={avatarImageCrop?.zoom}
+                    aspectInit={avatarImageCrop?.aspect}
+                    onCancel={onCancel}
+                    setCroppedImageFor={setCroppedImageFor}
+                    resetImage={resetImage}
+                  />
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
         </div>
+        <ToastContainer />
       </Dialog>
     </Transition>
   );

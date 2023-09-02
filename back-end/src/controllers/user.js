@@ -2,6 +2,8 @@ const User = require('../entities/user');
 const { UserModel } = require('../models/user');
 const { ControllerService } = require('../utils/decorators');
 const { Token } = require('../utils/generateToken');
+const multer = require('multer');
+const fs = require('fs-extra');
 
 class UserController {
   static async getNotifications(req, res, next) {
@@ -107,11 +109,47 @@ class UserController {
   static async changeInfo(req, res, next) {
     if (!req.user)
       return res.status(400).json({ msg: 'Invalid Authentication.' });
-    const id = req.user.id;
-    const { fullname, username } = req.body;
+    const user = req.user;
+    const { firstname, lastname, gender, birthday } = req.body;
+    user.firstname = firstname;
+    user.lastname = lastname;
+    user.gender = gender;
+    user.birthday = birthday;
+    user.save();
 
-    const result = await UserModel.changeInfo(fullname, username, id);
-    return res.status(result.getStatusCode()).send(result.getData());
+    // const result = await UserModel.changeInfo(fullname, username, id);
+    return res.status(200).send({});
+  }
+
+  static async changeAvatar(req, res, next) {
+    try {
+      if (!req.user)
+        return res.status(400).json({ msg: 'Invalid Authentication.' });
+      const user = req.user;
+
+      if (!req.file)
+        return res.status(400).send({ message: 'Please upload a file' });
+      const file = req.file;
+
+      const img = fs.readFileSync(file.path);
+      const encode_image = img.toString('base64');
+      const avatar = {
+        contentType: file.mimetype,
+        imageBase64: encode_image,
+      };
+
+      user.avatar = avatar;
+
+      user.save();
+
+      // const result = await UserModel.changeInfo(fullname, username, id);
+
+      return res.status(200).send({ message: 'Upload image successfully' });
+    } catch (error) {
+      res
+        .status(500)
+        .send({ message: 'Something went wrong.Please Try again' });
+    }
   }
 
   static async forgotPassword(req, res, next) {

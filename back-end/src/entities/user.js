@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
       type: String,
     },
   },
+  birthday: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+  },
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,

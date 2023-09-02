@@ -8,7 +8,7 @@ export const setInfoRoute = `${host}/auth/setInfo`;
 export const loginRoute = `${host}/auth/login`;
 export const refreshRoute = `${host}/auth/refresh_token`;
 
-export const avatarRoute = `${host}/upload`;
+export const avatarRoute = `${host}/user/change-avatar`;
 export const logoutRoute = `${host}/user/logout`;
 export const changeInfoRoute = `${host}/user/change-info`;
 

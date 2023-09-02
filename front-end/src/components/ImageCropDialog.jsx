@@ -57,9 +57,9 @@ function ImageCropDialog({
 
   return (
     <Container>
-      <div>
-        <div className="backdrop"></div>
-        <div className="crop-container">
+      <div className="h-[180px]">
+        <div className="bg-black fixed inset-0"></div>
+        <div className="bg-black fixed inset-0 rounded-full">
           <Cropper
             image={imageUrl}
             zoom={zoom}
@@ -70,8 +70,8 @@ function ImageCropDialog({
             onCropComplete={onCropComplete}
           />
         </div>
-        <div className="controls">
-          <div className="controls-upper-area">
+        <div className="flex flex-col bottom-0 left-0 w-full fixed justify-center items-center gap-4">
+          <div className="w-full flex justify-center">
             <input
               type="range"
               min={1}
@@ -81,13 +81,28 @@ function ImageCropDialog({
               onInput={e => {
                 onZoomChange(e.target.value);
               }}
-              className="slider"
+              className="w-1/2"
             ></input>
           </div>
-          <div className="button-area">
-            <button onClick={onCancel}>Cancel</button>
-            <button onClick={onResetImage}>Reset</button>
-            <button onClick={onCrop}>Crop</button>
+          <div className="flex gap-3 mb-3">
+            <button
+              onClick={onCancel}
+              className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+            >
+              Cancel
+            </button>
+            <button
+              className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+              onClick={onResetImage}
+            >
+              Reset
+            </button>
+            <button
+              className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+              onClick={onCrop}
+            >
+              Crop
+            </button>
           </div>
         </div>
       </div>
@@ -96,68 +111,8 @@ function ImageCropDialog({
 }
 
 const Container = styled.div`
-  .imageCard {
-    text-align: center;
-  }
-
-  .imageCard img {
-    width: 100px;
-  }
-
-  .backdrop {
-    position: fixed;
-    background-color: black;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-
   .reactEasyCrop_CropArea {
     border-radius: 50%;
-  }
-
-  .crop-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 80px;
-    border-radius: 50%;
-  }
-
-  .controls {
-    position: fixed;
-    bottom: 0px;
-    width: 100%;
-    height: 80px;
-  }
-
-  .controls-upper-area {
-    text-align: center;
-  }
-
-  .slider {
-    width: 50%;
-  }
-
-  input {
-    color: green;
-  }
-
-  .button-area {
-    text-align: center;
-    margin-top: 20px;
-  }
-  button {
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: black;
-    color: white;
-    border: 2px solid rgb(0, 91, 150);
-    font-size: 20px;
-    border-radius: 1rem;
-    padding: 0.5rem 1rem;
   }
 `;
 
