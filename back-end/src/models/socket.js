@@ -20,7 +20,6 @@ module.exports = {
     const offlineUsersTime = {}; // key is id of user, value is time offline
     const globalUsers = {};
     io.on('connection', socket => {
-      // console.log('connected');
       socket.on('join-room', data => {
         socket.join(data.chatRoomId);
       });

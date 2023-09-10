@@ -37,8 +37,6 @@ function SearchUser({ socket }) {
     cacheTime: 5 * 60 * 1000,
   });
 
-  console.log(dataSearch);
-
   const toastOptions = {
     position: 'top-right',
     autoClose: 3000,
@@ -161,7 +159,6 @@ function SearchUser({ socket }) {
     <div className="w-full px-2">
       <div className="flex flex-row items-center h-10 overflow-hidden bg-[#dbdfe2] pr-2 mt-2">
         <input
-          type="tel"
           placeholder="Search by fullname"
           onChange={e => setSearch(e.target.value)}
           value={search}
@@ -193,14 +190,11 @@ function SearchUser({ socket }) {
                         key={index}
                       >
                         <div className="flex flex-row items-center gap-2 truncate">
-                          {contact.avatar ? (
+                          {contact?.avatar ? (
                             <img
-                              src={
-                                'data:image/png;base64, ' +
-                                contact?.avatar?.imageBase64
-                              }
+                              src={contact.avatar}
                               alt=""
-                              className="w-[50px] h-[50px] rounded-full"
+                              className="w-[50px] h-[50px] rounded-full border border-gray-200"
                             />
                           ) : (
                             <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">

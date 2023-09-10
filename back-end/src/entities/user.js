@@ -19,12 +19,7 @@ const userSchema = new mongoose.Schema({
     // required: true,
   },
   avatar: {
-    contentType: {
-      type: String,
-    },
-    imageBase64: {
-      type: String,
-    },
+    type: String,
   },
   birthday: {
     type: Date,

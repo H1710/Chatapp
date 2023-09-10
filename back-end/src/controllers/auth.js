@@ -79,7 +79,23 @@ class AuthController {
             populate: {
               path: 'userIds',
               model: 'User',
-              select: '_id firstname lastname',
+              select: '_id firstname lastname avatar',
+            },
+          })
+          .populate({
+            path: 'friends',
+            populate: {
+              path: 'senderId',
+              model: 'User',
+              select: '_id firstname lastname avatar',
+            },
+          })
+          .populate({
+            path: 'friends',
+            populate: {
+              path: 'receiverId',
+              model: 'User',
+              select: '_id firstname lastname avatar',
             },
           });
         if (!user) {
@@ -106,9 +122,9 @@ class AuthController {
         sameSite: 'none',
         // domain: 'https://chat-app-fe-ruddy.vercel.app/',
       });
-      return res.json({ msg: 'Logged out' });
+      return res.status(200).send({ message: 'Logged out' });
     } catch (err) {
-      return res.status(500).json({ msg: 'Logout error' });
+      return res.status(500).send({ message: 'Logout error' });
     }
   }
 

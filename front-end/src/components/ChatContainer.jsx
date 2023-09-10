@@ -3,7 +3,7 @@ import ChatInput from './ChatInput';
 import { sendMessageRoute, getChatroomMessages } from '../utils/APIRoutes';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../utils/FetchData';
@@ -15,7 +15,6 @@ function ChatContainer({ currentChat, onlineUsers }) {
   const [date, setDate] = useState(0);
   const scrollRef = useRef();
   const [minutes, setMinutes] = useState(1);
-  const dispatch = useDispatch();
   const auth = useSelector(state => state.auth.auth);
   const currentRoom = useSelector(state => state.chatroom.currentRoom);
   const socket = useSelector(state => state.socket.socket);
@@ -93,6 +92,8 @@ function ChatContainer({ currentChat, onlineUsers }) {
       } else {
         return contact.userIds[0].firstname + ' ' + contact.userIds[0].lastname;
       }
+    } else {
+      return contact.name;
     }
   };
 
@@ -102,6 +103,16 @@ function ChatContainer({ currentChat, onlineUsers }) {
         return contact.userIds[1]._id;
       } else {
         return contact.userIds[0]._id;
+      }
+    }
+  };
+
+  const getAvatarContact = contact => {
+    if (contact.userIds.length === 2) {
+      if (contact.userIds[0]._id === auth._id) {
+        return contact.userIds[1]?.avatar;
+      } else {
+        return contact.userIds[0]?.avatar;
       }
     }
   };
@@ -152,14 +163,24 @@ function ChatContainer({ currentChat, onlineUsers }) {
         ...prev,
         {
           content: data.data.content,
-          senderId: auth,
+          senderId: {
+            _id: auth._id,
+            avatar: auth.avatar,
+            firstname: auth.firstname,
+            lastname: auth.lastname,
+          },
           updatedAt: Date.now(),
         },
       ]);
       socket.emit('send-msg', {
         chatRoomId: dataRoom.data.chatroom._id,
         content: data.data.content,
-        senderId: auth,
+        senderId: {
+          _id: auth._id,
+          avatar: auth.avatar,
+          firstname: auth.firstname,
+          lastname: auth.lastname,
+        },
         updatedAt: Date.now(),
       });
     },
@@ -173,19 +194,20 @@ function ChatContainer({ currentChat, onlineUsers }) {
     });
   };
 
-  socket?.on('receive-msg', data => {
-    console.log(messages);
-    console.log(data);
-    setMessages(prev => [
-      ...prev,
-      {
-        _id: data.chatRoomId,
-        content: data.message,
-        senderId: data.sender,
-        updatedAt: Date.now(),
-      },
-    ]);
-  });
+  useEffect(() => {
+    socket?.on('receive-msg', data => {
+      setMessages(prev => [
+        ...prev,
+        {
+          _id: data.chatRoomId,
+          content: data.content,
+          senderId: data.senderId,
+          updatedAt: Date.now(),
+        },
+      ]);
+    });
+    return () => socket.off('receive-msg');
+  }, [socket]);
 
   // useLayoutEffect(() => {
   //   arrivalMessages && setMessages(prev => [...prev, arrivalMessages]);
@@ -195,81 +217,63 @@ function ChatContainer({ currentChat, onlineUsers }) {
     scrollRef?.current?.scrollIntoView({ behaviour: 'smooth' });
   }, [messages]);
 
+  console.log(currentRoom);
   return (
     <>
       <div className="h-[70px] w-full flex flex-row px-4 py-2 justify-between border-b border-[#dbdfe2]">
-        {!loadDataRoom && (
-          <>
-            <div className="flex flex-row items-center space-x-4">
-              {dataRoom.data.chatroom.userIds.length == 2 ? (
-                <div className="relative text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex rounded-full">
-                  <div className="z-10 absolute top-0 left-0">
-                    {dataRoom.data.chatroom?.avatar ? (
-                      <img
-                        className="w-[36px] h-[36px] rounded-full border-[#79C7C5] border-[2px] object-cover "
-                        src={
-                          'data:image/png;base64, ' +
-                          currentChat[0].avatar.imageBase64
-                        }
-                        alt=""
-                      />
-                    ) : (
-                      <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
-                        <p>{getNameContact(dataRoom.data.chatroom)[0]}</p>
-                      </div>
-                    )}
-                    {onlineUsers &&
-                    onlineUsers[getUserIdContact(dataRoom.data.chatroom)] ? (
-                      <div className="absolute z-20 top-10 left-8 bg-[#31a24c] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
-                    ) : (
-                      <div className="absolute z-20 top-10 left-8 bg-[#ccc] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  {currentChat[0].avartar ? (
-                    <img
-                      className="w-[50px] h-[50px] rounded-full border-[#79C7C5] border-[2px] object-cover "
-                      src={
-                        'data:image/png;base64, ' +
-                        currentChat[0].avatar.imageBase64
-                      }
-                      alt=""
-                    />
-                  ) : (
-                    <div className="text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]">
-                      <p>{dataRoom.chatroom.name[0]}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <p className="text-xl text-[#777777]">
-                {getNameContact(dataRoom.data.chatroom)}
-              </p>
-            </div>
-            <div className="flex items-center">
-              {date && !onlineUsers?.includes(currentChat._id) ? (
-                Math.floor(Math.floor(date) + minutes) < 5 ? (
-                  <h6>Offlined {date + minutes} minutes ago</h6>
-                ) : Math.floor(date + minutes) < 60 ? (
-                  <h6>Offlined {Math.floor(date + minutes)} minutes ago</h6>
-                ) : Math.floor((date + minutes) / 60) < 24 ? (
-                  <h6>
-                    Offlined {Math.floor((date + minutes) / 60)} hours ago
-                  </h6>
+        <div className="flex flex-row items-center space-x-4">
+          {currentRoom.userIds.length == 2 ? (
+            <div className="relative text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex rounded-full">
+              <div className="z-10 absolute top-0 left-0">
+                {getAvatarContact(currentRoom) ? (
+                  <img
+                    className="w-[50px] h-[50px] rounded-full object-cover"
+                    src={getAvatarContact(currentRoom)}
+                    alt=""
+                  />
                 ) : (
-                  <h6>
-                    Offlined {Math.floor((date + minutes) / (60 * 24))} days ago
-                  </h6>
-                )
-              ) : (
-                <h6></h6>
-              )}
+                  <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
+                    <p>{getNameContact(currentRoom)[0]}</p>
+                  </div>
+                )}
+                {onlineUsers && onlineUsers[getUserIdContact(currentRoom)] ? (
+                  <div className="absolute z-20 top-10 left-8 bg-[#31a24c] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
+                ) : (
+                  <div className="absolute z-20 top-10 left-8 bg-[#ccc] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
+                )}
+              </div>
             </div>
-          </>
-        )}
+          ) : (
+            <div>
+              <img
+                className="w-[50px] h-[50px] rounded-full object-cover "
+                src={'data:image/png;base64, ' + currentRoom.avatar.imageBase64}
+                alt=""
+              />
+            </div>
+          )}
+
+          <p className="text-xl text-[#777777]">
+            {getNameContact(currentRoom)}
+          </p>
+        </div>
+        <div className="flex items-center">
+          {date && !onlineUsers?.includes(currentChat._id) ? (
+            Math.floor(Math.floor(date) + minutes) < 5 ? (
+              <h6>Offlined {date + minutes} minutes ago</h6>
+            ) : Math.floor(date + minutes) < 60 ? (
+              <h6>Offlined {Math.floor(date + minutes)} minutes ago</h6>
+            ) : Math.floor((date + minutes) / 60) < 24 ? (
+              <h6>Offlined {Math.floor((date + minutes) / 60)} hours ago</h6>
+            ) : (
+              <h6>
+                Offlined {Math.floor((date + minutes) / (60 * 24))} days ago
+              </h6>
+            )
+          ) : (
+            <h6></h6>
+          )}
+        </div>
       </div>
 
       <div className="chat-messages flex-1 px-3 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
@@ -301,12 +305,9 @@ function ChatContainer({ currentChat, onlineUsers }) {
                     }
                   >
                     <div className="shadow-lg">
-                      {message.sender?.avatar ? (
+                      {message.senderId?.avatar ? (
                         <img
-                          src={
-                            'data:image/png;base64, ' +
-                            message.sender.avatar?.imageBase64
-                          }
+                          src={message.senderId.avatar}
                           alt=""
                           className="flex w-[20px] h-[20px] border-[1px] border-[#79C7C5] rounded-full"
                         />

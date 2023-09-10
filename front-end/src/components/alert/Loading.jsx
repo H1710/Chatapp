@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Loading = () => {
   return (
     <FormContainer>
-      <div class="ring">
+      <div className="ring">
         Loading...
         <span></span>
       </div>

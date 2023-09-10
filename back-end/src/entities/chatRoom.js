@@ -4,6 +4,7 @@ const chatRoomSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      // required: true,
     },
     userIds: [
       {
@@ -12,6 +13,9 @@ const chatRoomSchema = new mongoose.Schema(
         required: true,
       },
     ],
+    avatar: {
+      type: String,
+    },
     messages: [
       {
         type: mongoose.Schema.Types.ObjectId,

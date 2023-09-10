@@ -6,13 +6,14 @@ function Message({ onlineUsers }) {
   const dispatch = useDispatch();
 
   const currentRoom = useSelector(state => state.chatroom.currentRoom);
+  const socket = useSelector(state => state.socket.socket);
 
   const changeCurrentChat = async contact => {
+    if (currentRoom) socket.emit('leave-room', currentRoom._id);
     await dispatch(changeRoom(contact));
   };
 
   const auth = useSelector(state => state.auth.auth);
-
   const getNameContact = contact => {
     if (contact.userIds.length === 2) {
       if (contact.userIds[0]._id === auth._id) {
@@ -28,6 +29,15 @@ function Message({ onlineUsers }) {
         return contact.userIds[1]._id;
       } else {
         return contact.userIds[0]._id;
+      }
+    }
+  };
+  const getAvatarContact = contact => {
+    if (contact.userIds.length === 2) {
+      if (contact.userIds[0]._id === auth._id) {
+        return contact.userIds[1]?.avatar;
+      } else {
+        return contact.userIds[0]?.avatar;
       }
     }
   };
@@ -58,13 +68,10 @@ function Message({ onlineUsers }) {
                       {contact.userIds.length == 2 ? (
                         <div className="relative text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex rounded-full">
                           <div className="z-10 absolute top-0 left-0">
-                            {contact.avatar ? (
+                            {getAvatarContact(contact) ? (
                               <img
-                                className="w-[36px] h-[36px] rounded-full border-[#79C7C5] border-[2px] object-cover "
-                                src={
-                                  'data:image/png;base64, ' +
-                                  contact.avatar.imageBase64
-                                }
+                                className="w-[50px] h-[50px] rounded-full object-cover shadow-lg"
+                                src={getAvatarContact(contact)}
                                 alt="Avatar"
                               />
                             ) : (
@@ -82,20 +89,11 @@ function Message({ onlineUsers }) {
                         </div>
                       ) : (
                         <div>
-                          {contact[0].avatar ? (
-                            <img
-                              className="w-[50px] h-[50px] rounded-full m-auto border-[#79C7C5] border-[2px] object-cover "
-                              src={
-                                'data:image/png;base64, ' +
-                                contact[0].avatar.imageBase64
-                              }
-                              alt=""
-                            />
-                          ) : (
-                            <div className="text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-gradient-to-r from-[#79C7C5] to-[#A1E2D9]">
-                              <p>{contact[0]?.fullname[0]}</p>
-                            </div>
-                          )}
+                          <img
+                            className="w-[50px] h-[50px] rounded-full m-auto object-cover "
+                            src={contact.avatar}
+                            alt=""
+                          />
                         </div>
                       )}
                     </div>

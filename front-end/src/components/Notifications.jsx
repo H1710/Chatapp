@@ -9,11 +9,8 @@ import {
   cancelRequestRoute,
   getNotificationsRoute,
 } from '../utils/APIRoutes';
+import { CircularProgress } from '@mui/material';
 const Notification = () => {
-  const [currentRequest, setCurrentRequest] = useState([]);
-  const [currentUserRequest, setCurrentUserRequest] = useState([]);
-  const [requestAccepted, setRequestAccepted] = useState([]);
-  const [requestCancelled, setRequestCancelled] = useState([]);
   // const { socket } = useSelector(state => state);
   const auth = useSelector(state => state.auth.auth);
 
@@ -29,6 +26,8 @@ const Notification = () => {
     staleTime: 10 * 1000,
     cacheTime: 5 * 60 * 1000,
   });
+
+  console.log(dataNotifications);
 
   const toastOptions = {
     position: 'top-right',
@@ -87,7 +86,12 @@ const Notification = () => {
   return (
     <>
       {isLoading ? (
-        <LoadingCompoent />
+        <>
+          <div className="flex items-center justify-center gap-1 mt-2">
+            Loading...
+            <CircularProgress size={20} color="inherit" />
+          </div>
+        </>
       ) : (
         <div className="w-full">
           {dataNotifications.data?.user &&
@@ -100,14 +104,11 @@ const Notification = () => {
                     key={index}
                   >
                     <div className="flex flex-row items-center gap-2 truncate">
-                      {contact.senderId.avatar ? (
+                      {contact.senderId?.avatar ? (
                         <img
-                          src={
-                            'data:image/png;base64, ' +
-                            contact?.senderId.avatar?.imageBase64
-                          }
+                          src={contact.senderId?.avatar}
                           alt=""
-                          className="w-[50px] h-[50px] rounded-full"
+                          className="w-[50px] h-[50px] rounded-full border border-gray-100"
                         />
                       ) : (
                         <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
@@ -153,7 +154,7 @@ const Notification = () => {
               })}
             </div>
           ) : (
-            <p>Nothing</p>
+            <p className="mt-2 ml-2">Nothing</p>
           )}
         </div>
       )}

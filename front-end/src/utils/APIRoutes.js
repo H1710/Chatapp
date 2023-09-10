@@ -7,9 +7,9 @@ export const confirmOTPRoute = `${host}/auth/submitOTP`;
 export const setInfoRoute = `${host}/auth/setInfo`;
 export const loginRoute = `${host}/auth/login`;
 export const refreshRoute = `${host}/auth/refresh_token`;
+export const logoutRoute = `${host}/auth/logout`;
 
 export const avatarRoute = `${host}/user/change-avatar`;
-export const logoutRoute = `${host}/user/logout`;
 export const changeInfoRoute = `${host}/user/change-info`;
 
 export const sendOTPRoute = `${host}/otp/send`;

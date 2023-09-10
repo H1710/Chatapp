@@ -20,21 +20,26 @@ const SetInfo = () => {
           <div className=" w-full flex items-center gap-2 mt-6 pb-3 px-10 justify-between border-b border-[#dbdfe2]">
             <div className="flex flex-row gap-10 justify-center items-center">
               {auth.avatar ? (
-                <div className="cursor-pointer">
+                <div className="group cursor-pointer relative overflow-hidden text-[50px] rounded-full text-[rgb(249,251,255)] w-44 h-44 flex items-center justify-center border border-gray-300 shadow">
                   <img
-                    src={'data:image/png;base64, ' + auth.avatar?.imageBase64}
+                    src={auth.avatar}
                     alt={auth.firstname + ' ' + auth.lastname}
-                    className="w-44 h-44 rounded-full"
+                    className="w-full h-full object-cover border border-gray-300 shadow"
                     title={auth.firstname + ' ' + auth.lastname}
                   />
-                  <div className="absolute bg-black w-full h-1/2 hidden bottom-0 bg-opacity-30 group-hover:flex group-hover:flex-col group-hover:items-center group-hover:bottom-4 group-hover:animate-fade-up">
+                  <div
+                    className="absolute bg-black w-full h-1/2 hidden bottom-0 bg-opacity-30 group-hover:flex group-hover:flex-col group-hover:items-center group-hover:bottom-4 group-hover:animate-fade-up"
+                    onClick={() => {
+                      setOpenEditAvatar(true);
+                    }}
+                  >
                     <AiOutlineCamera size={40} />
                     <span className="group-hover:block text-lg">Change</span>
                   </div>
                 </div>
               ) : (
                 <div
-                  className="group cursor-pointer relative overflow-hidden text-[50px] rounded-full text-[rgb(249,251,255)] w-44 h-44 flex items-center justify-center bg-[#66a4ff]"
+                  className="group cursor-pointer relative overflow-hidden text-[50px] rounded-full text-[rgb(249,251,255)] w-44 h-44 flex items-center justify-center bg-[#66a4ff] border border-gray-300 shadow"
                   title={auth.firstname + ' ' + auth.lastname}
                 >
                   <p>{auth.firstname[0]}</p>
@@ -169,7 +174,7 @@ const SetInfo = () => {
               </div>
             </div>
           </div>
-          <div className="bg-blue-400 flex-[7_7_0%]"></div>
+          <div className="bg-white flex-[7_7_0%]"></div>
         </div>
         <ChangeInfoForm
           openEditInfo={openEditInfo}

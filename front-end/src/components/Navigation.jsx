@@ -8,6 +8,8 @@ import { BiSolidBell } from 'react-icons/bi';
 import { PiMagnifyingGlassFill } from 'react-icons/pi';
 import { FiLogOut } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
+import ChangeInfoForm from './ChangeInfoForm';
+import LogoutForm from './LogoutForm';
 
 const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -16,6 +18,8 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
   const [menu, setMenu] = useState(false);
   const [numberNotes, setNumberNotes] = useState(0);
   const dispatch = useDispatch();
+
+  const [openLogout, setOpenLogout] = useState(false);
 
   const handleSetMenu = () => {
     setMenu(!menu);
@@ -100,13 +104,14 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
         </div>
         <div
           onClick={() => {
-            dispatch({ type: 'ALERT', payload: { logout: true } });
+            setOpenLogout(true);
           }}
           className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white hover:bg-[#0043a6]`}
         >
           <FiLogOut fontSize={28} />
         </div>
       </div>
+      <LogoutForm openLogout={openLogout} setOpenLogout={setOpenLogout} />
     </div>
   );
 };

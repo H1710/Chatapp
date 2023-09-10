@@ -1,9 +1,8 @@
 const User = require('../entities/user');
 const { UserModel } = require('../models/user');
-const { ControllerService } = require('../utils/decorators');
 const { Token } = require('../utils/generateToken');
-const multer = require('multer');
-const fs = require('fs-extra');
+const FriendInvitation = require('../entities/friendInvitation');
+const cloudinary = require('../utils/cloudinary');
 
 class UserController {
   static async getNotifications(req, res, next) {
@@ -16,7 +15,7 @@ class UserController {
         populate: {
           path: 'senderId',
           model: 'User',
-          select: '_id firstname lastname',
+          select: '_id firstname lastname avatar',
         },
       });
       return res.status(200).send({ user });
@@ -108,7 +107,7 @@ class UserController {
 
   static async changeInfo(req, res, next) {
     if (!req.user)
-      return res.status(400).json({ msg: 'Invalid Authentication.' });
+      return res.status(400).json({ message: 'Invalid Authentication.' });
     const user = req.user;
     const { firstname, lastname, gender, birthday } = req.body;
     user.firstname = firstname;
@@ -117,34 +116,39 @@ class UserController {
     user.birthday = birthday;
     user.save();
 
+    const info = { firstname, lastname, gender, birthday };
+
     // const result = await UserModel.changeInfo(fullname, username, id);
-    return res.status(200).send({});
+    return res.status(200).send({ message: 'Change info success', info: info });
   }
 
   static async changeAvatar(req, res, next) {
     try {
       if (!req.user)
-        return res.status(400).json({ msg: 'Invalid Authentication.' });
+        return res.status(400).json({ message: 'Invalid Authentication.' });
       const user = req.user;
 
       if (!req.file)
         return res.status(400).send({ message: 'Please upload a file' });
-      const file = req.file;
+      const uploadFile = req.file;
 
-      const img = fs.readFileSync(file.path);
-      const encode_image = img.toString('base64');
-      const avatar = {
-        contentType: file.mimetype,
-        imageBase64: encode_image,
-      };
+      const result = await cloudinary.uploader.upload(uploadFile.path, {
+        public_id: uploadFile.originalname,
+        resource_type: 'auto',
+        folder: 'chat-app',
+        use_filename: true,
+        unique_filename: false,
+      });
 
-      user.avatar = avatar;
+      user.avatar = result.url;
 
       user.save();
 
       // const result = await UserModel.changeInfo(fullname, username, id);
 
-      return res.status(200).send({ message: 'Upload image successfully' });
+      return res
+        .status(200)
+        .send({ message: 'Upload image successfully', avatar: result.url });
     } catch (error) {
       res
         .status(500)
@@ -169,9 +173,18 @@ class UserController {
   }
 
   static async getFriendsList(req, res, next) {
-    const { id } = req.params;
-    const result = await UserModel.getFriendList(id);
-    return res.status(result.getStatusCode()).send(result.getData());
+    try {
+      const { userId } = req.params;
+      const friends = await FriendInvitation.find({
+        $or: [
+          { senderId: userId, status: 3 },
+          { receiverId: userId, status: 3 },
+        ],
+      });
+      res.status(200).send({ friends: friends });
+    } catch (error) {
+      res.status(500).send({ message: 'Something went wrong.' });
+    }
   }
 
   static async getAllContacts(req, res, next) {

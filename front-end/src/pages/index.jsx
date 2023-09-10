@@ -25,9 +25,9 @@ function Chat() {
   const [navSelect, setNavSelect] = useState('messages');
   const [onlineUsers, setOnlineUsers] = useState(undefined);
   const [offlineUsersTime, setOfflineUsersTime] = useState(undefined);
-  const socket = useRef();
 
   const currentRoom = useSelector(state => state.chatroom.currentRoom);
+  const socket = useSelector(state => state.socket.socket);
 
   const toastOptions = {
     position: 'top-right',
@@ -57,26 +57,17 @@ function Chat() {
       dispatch(
         seft({ ...data.data.user, access_token: data.data.access_token })
       );
-      socket.current = io(process.env.SERVER_URL ?? 'http://localhost:5001');
       // socket.current = io('https://chat-app-be1.onrender.com/api/v1');
-      socket.current.emit('login', { userId: data.data.user._id });
-      socket.current?.on('onlineUser', data => {
+      socket.emit('login', { userId: data.data.user._id });
+      socket.on('onlineUser', data => {
         setOnlineUsers(data.onlineUsers);
       });
-
-      dispatch(setSocket(socket.current));
     },
     onError: error => {
       toast.error(error.response.data.message, toastOptions);
     },
     enabled: logged,
   });
-
-  useEffect(() => {
-    return () => {
-      socket.current?.close();
-    };
-  }, []);
 
   // useEffect(() => {
   //   const handleNotification = async () => {

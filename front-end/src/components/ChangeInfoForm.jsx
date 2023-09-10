@@ -1,13 +1,15 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { patchAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
 import { changeInfoRoute } from '../utils/APIRoutes';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import { changeInfo } from '../redux/reducers/authReducer';
 
 const ChangeInfoForm = ({ openEditInfo, setOpenEditInfo }) => {
   const auth = useSelector(state => state.auth.auth);
+  const dispatch = useDispatch();
 
   const [values, setValues] = useState({
     firstname: auth.firstname,
@@ -40,6 +42,7 @@ const ChangeInfoForm = ({ openEditInfo, setOpenEditInfo }) => {
     },
     onSuccess: data => {
       toast.success(data.data.message, toastOptions);
+      dispatch(changeInfo(data.data.info));
     },
   });
 
@@ -188,6 +191,7 @@ const ChangeInfoForm = ({ openEditInfo, setOpenEditInfo }) => {
             </Transition.Child>
           </div>
         </div>
+        <ToastContainer />
       </Dialog>
     </Transition>
   );

@@ -120,10 +120,10 @@ function Login() {
                 class="block text-center text-white bg-[#3386ff] p-3 duration-300 rounded-sm hover:bg-[#0068ff] w-full"
               >
                 {loadingLogin ? (
-                  <>
+                  <div className="flex items-center justify-center gap-1">
                     Loading...
                     <CircularProgress size={20} color="inherit" />
-                  </>
+                  </div>
                 ) : (
                   <p>Login</p>
                 )}

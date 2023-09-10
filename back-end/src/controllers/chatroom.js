@@ -1,11 +1,44 @@
 const { ChatroomModel } = require('../models/chatroom');
 const ChatRoom = require('../entities/chatRoom');
+const User = require('../entities/user');
+const cloudinary = require('../utils/cloudinary');
 
 class ChatRoomController {
   static async createChatroom(req, res, next) {
-    const userIDs = req.body;
-    const result = await ChatroomModel.createChatroom(userIDs);
-    return res.status(result.getStatusCode()).send(result.getData());
+    try {
+      const { userIds, name } = req.body;
+      if (!req.file)
+        return res.status(400).send({ message: 'Please upload a file' });
+
+      const uploadFile = req.file;
+      const result = await cloudinary.uploader.upload(uploadFile.path, {
+        public_id: uploadFile.originalname,
+        resource_type: 'auto',
+        folder: 'chat-app',
+        use_filename: true,
+        unique_filename: false,
+      });
+
+      const users = userIds.split(',');
+
+      const chatroom = await ChatRoom.create({
+        userIds: users,
+        avatar: result.url,
+        name: name,
+      });
+
+      users.forEach(async item => {
+        const user = await User.findById(item);
+        user.chatroom.push(chatroom._id);
+        await user.save();
+      });
+      return res
+        .status(200)
+        .send({ message: 'Create room success', chatroom: chatroom });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: 'Something went wrong' });
+    }
   }
 
   static async getChatroomMessages(req, res, next) {
@@ -18,13 +51,13 @@ class ChatRoomController {
           populate: {
             path: 'senderId',
             model: 'User',
-            select: '_id firstname lastname',
+            select: '_id firstname lastname avatar',
           },
         })
         .populate({
           path: 'userIds',
           model: 'User',
-          select: '_id firstname lastname',
+          select: '_id firstname lastname avatar',
         });
       if (!chatroom)
         return res.status(400).send({ message: 'Chatroom not exist' });

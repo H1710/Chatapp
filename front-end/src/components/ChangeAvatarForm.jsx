@@ -1,18 +1,21 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { patchAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
 import { avatarRoute, changeInfoRoute } from '../utils/APIRoutes';
 import { toast, ToastContainer } from 'react-toastify';
 import ImageCropDialog from './ImageCropDialog';
+import { changeAvatar } from '../redux/reducers/authReducer';
+import { CircularProgress } from '@mui/material';
 
 const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
   const [selectedFile, setSelectedFile] = useState('');
-  const [image, setImage] = useState('');
   const [avatarImageCrop, setAvatarImageCrop] = useState(null);
   const [openCrop, setOpenCrop] = useState(false);
   const auth = useSelector(state => state.auth.auth);
+  const dispatch = useDispatch();
+  const [image, setImage] = useState('');
 
   const toastOptions = {
     position: 'top-right',
@@ -30,7 +33,9 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
       toast.error(error.response.data.message, toastOptions);
     },
     onSuccess: data => {
+      setOpenEditAvatar(false);
       toast.success(data.data.message, toastOptions);
+      dispatch(changeAvatar(data.data.avatar));
     },
   });
   const handleSubmit = e => {
@@ -90,9 +95,23 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
     });
   };
 
+  const checkImage = file => {
+    const types = ['image/png', 'image/jpeg'];
+    let err = '';
+    if (!file) return (err = 'File does not exist.');
+
+    if (file.size > 1024 * 1024)
+      // 1mb
+      err = 'The largest image size is 1mb';
+    if (!types.includes(file.type)) err = 'The image type is png / jpeg';
+
+    return err;
+  };
+
   const handleChange = e => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
+    if (checkImage(e.target?.files[0])) {
+      toast.error(checkImage(e.target?.files[0]));
+      setSelectedFile(null);
       return;
     }
     setSelectedFile(e.target.files[0]);
@@ -172,14 +191,16 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
                     />
                   </div>
                   <div className="flex justify-center">
-                    <img
-                      onClick={() => {
-                        setOpenCrop(true);
-                      }}
-                      src={image}
-                      alt=""
-                      className="w-44 h-44 rounded-full object-cover border border-gray-300 shadow"
-                    />
+                    {image && (
+                      <img
+                        onClick={() => {
+                          setOpenCrop(true);
+                        }}
+                        src={image}
+                        alt=""
+                        className="w-44 h-44 rounded-full object-cover border border-gray-300 shadow"
+                      />
+                    )}
                   </div>
                   <div className="flex gap-20 mt-4">
                     <div
@@ -192,9 +213,21 @@ const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {
                     </div>
                     <button
                       type="submit"
-                      className="flex-1 text-center text-white bg-gray-800 p-3 duration-300 rounded-sm hover:bg-black"
+                      className={`flex-1 text-center p-3 duration-300 rounded-sm ${
+                        !selectedFile
+                          ? 'bg-gray-200'
+                          : 'bg-gray-800 hover:bg-black text-white'
+                      }`}
+                      disabled={!selectedFile}
                     >
-                      Save
+                      {loadingChange ? (
+                        <div className="flex items-center justify-center gap-1">
+                          Loading...
+                          <CircularProgress size={20} color="inherit" />
+                        </div>
+                      ) : (
+                        <p>Create</p>
+                      )}
                     </button>
                   </div>
                 </form>
