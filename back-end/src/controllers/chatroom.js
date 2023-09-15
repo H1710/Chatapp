@@ -1,4 +1,3 @@
-const { ChatroomModel } = require('../models/chatroom');
 const ChatRoom = require('../entities/chatRoom');
 const User = require('../entities/user');
 const cloudinary = require('../utils/cloudinary');

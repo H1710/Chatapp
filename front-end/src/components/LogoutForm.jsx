@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LogoutForm = ({ openLogout, setOpenLogout }) => {
   const auth = useSelector(state => state.auth.auth);
+  const socket = useSelector(state => state.socket.socket);
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
@@ -44,6 +45,7 @@ const LogoutForm = ({ openLogout, setOpenLogout }) => {
     onSuccess: data => {
       toast.success(data.data.message, toastOptions);
       localStorage.clear('signed');
+      socket.emit('logout', { userId: auth._id });
     },
   });
 

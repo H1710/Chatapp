@@ -1,7 +1,6 @@
 const User = require('../entities/user');
 const jwt = require('jsonwebtoken');
 const { Token } = require('../utils/generateToken');
-const { transportOTP } = require('../utils/OTPutil');
 const sendVerificationEmail = require('../utils/OTPutil');
 const bcrypt = require('bcrypt');
 
@@ -10,20 +9,21 @@ class AuthController {
     try {
       const token = req.header('Authorization');
       if (!token)
-        return res.status(400).json({ msg: 'Invalid Authentication.' });
+        return res.status(400).json({ message: 'Invalid Authentication.' });
 
       const decoded = jwt.verify(token, `${process.env.ACCESS_TOKEN_SECRET}`);
       if (!decoded)
-        return res.status(400).json({ msg: 'Invalid Authentication.' });
+        return res.status(400).json({ message: 'Invalid Authentication.' });
 
       const user = await User.findOne({ _id: decoded._id });
-      if (!user) return res.status(400).json({ msg: 'User does not exist.' });
+      if (!user)
+        return res.status(400).json({ message: 'User does not exist.' });
 
       req.user = user;
 
       next();
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 
@@ -34,11 +34,17 @@ class AuthController {
       if (!user)
         return res
           .status(400)
-          .json({ message: 'This account does not exist.' });
+          .send({ message: 'This account does not exist.' });
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ message: 'Password incorrect' });
+        return res.status(400).send({ message: 'Password incorrect' });
+      }
+
+      if (!user.firstname || !user.lastname) {
+        return res
+          .status(400)
+          .send({ message: 'Account has not been registered' });
       }
 
       const access_token = await Token.generateAccessToken({ _id: user._id });

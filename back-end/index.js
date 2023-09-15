@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const DBconnection = require('./src/DBconnection/db');
 const routes = require('./src/routes/index');
-const { socketConnect } = require('./src/models/socket');
+const { socketConnect } = require('./src/utils/socket');
 require('dotenv').config();
 
 const app = express();

@@ -1,8 +1,5 @@
 const { createServer } = require('http');
 const socket = require('socket.io');
-const { MessageModel } = require('./mesage');
-const { FriendInvitationModel } = require('./friendInvitation');
-const { UserModel } = require('./user');
 const User = require('../entities/user');
 
 module.exports = {
@@ -37,6 +34,17 @@ module.exports = {
         io.emit('onlineUser', {
           onlineUsers: globalUsers,
           offlineUsersTime: offlineUsersTime,
+        });
+      });
+
+      socket.on('logout', async function (data) {
+        // console.log('a user ' + data.userId + ' connected');
+        const socket_id = globalUsers[data.userId];
+        await delete globalUsers[data.userId];
+        await delete socketUser[socket_id];
+        // saving userId to object with socket ID
+        io.emit('onlineUser', {
+          onlineUsers: globalUsers,
         });
       });
 

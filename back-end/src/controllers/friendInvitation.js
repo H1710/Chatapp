@@ -1,4 +1,3 @@
-const { FriendInvitationModel } = require('../models/friendInvitation');
 const FriendInvitation = require('../entities/friendInvitation');
 const User = require('../entities/user');
 const ChatRoom = require('../entities/chatRoom');
