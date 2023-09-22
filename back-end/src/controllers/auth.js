@@ -54,7 +54,6 @@ class AuthController {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
         sameSite: 'none',
         secure: true,
-        signed: true,
       });
 
       return res.status(200).send({
