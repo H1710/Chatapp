@@ -8,7 +8,9 @@ import { useEffect } from 'react';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    const socket = io.connect('http://localhost:5001', { reconnect: true });
+    const socket = io.connect('https://chat-app-be-ptrn.onrender.com', {
+      reconnect: true,
+    });
     dispatch(setSocket(socket));
     return () => {
       socket.close();

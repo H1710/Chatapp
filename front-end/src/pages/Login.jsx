@@ -75,11 +75,11 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-[#cdcfd3]">
+    <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-blue-100">
       {isLoading ? (
         <Loading />
       ) : (
-        <div class="bg-white w-[400px] m-auto my-10 shadow-md">
+        <div class="bg-white w-[400px] m-auto my-10 shadow-md border border-gray-200">
           <div class="py-8 px-8 rounded-xl">
             <h1 class="font-medium text-2xl text-center">Login</h1>
             <form class="mt-6" onSubmit={e => handleSubmit(e)}>

@@ -103,8 +103,8 @@ function Register() {
     });
   };
   return (
-    <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-[#cdcfd3]">
-      <div className="bg-white w-[400px] m-auto my-10 shadow-md">
+    <div className="flex items-center justify-center w-[100vw] h-[100vh] bg-blue-100">
+      <div className="bg-white w-[400px] m-auto my-10 shadow-md border border-gray-100">
         <div className="mx-4 p-4">
           <div className="flex items-center">
             <div className="flex items-center text-gray-500 relative">
