@@ -45,7 +45,7 @@ function Message({ onlineUsers }) {
   return (
     <div className="h-[70%] flex flex-col justify-end">
       <div className="overflow-y-scroll overflow-x-hidden lg:h-[400px] h-[500px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-2">
-        {auth?.chatroom.length !== 0 ? (
+        {auth?.chatroom && auth?.chatroom.length !== 0 ? (
           <div className="flex flex-col justify-center">
             {auth.chatroom.map((contact, index) => {
               return (

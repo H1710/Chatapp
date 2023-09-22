@@ -24,17 +24,17 @@ const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
   const [image, setImage] = useState('');
 
   const [friends, setFriends] = useState(
-    auth.friends.reduce((total, contact) => {
-      return [
-        ...total,
-        contact.senderId._id !== auth._id
-          ? contact.senderId
-          : contact.receiverId,
-      ];
-    }, [])
+    auth?.friends
+      ? auth?.friends?.reduce((total, contact) => {
+          return [
+            ...total,
+            contact.senderId._id !== auth._id
+              ? contact.senderId
+              : contact.receiverId,
+          ];
+        }, [])
+      : []
   );
-
-  console.log(friends);
 
   const filterFriends = searchtext => {
     const regex = new RegExp(searchtext, 'i'); // 'i' flag for case-insensitive search
