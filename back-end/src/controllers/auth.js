@@ -55,6 +55,7 @@ class AuthController {
         sameSite: 'none',
         domain: 'https://chat-app-fe-jdt5.onrender.com',
         secure: true,
+        signed: true,
       });
 
       return res.status(200).send({
