@@ -21,7 +21,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const socket = io.connect(
-      process.env.SERVER_URL
+      process.env.REACT_APP_SERVER_URL
         ? 'https://chat-app-be-ptrn.onrender.com'
         : 'http://localhost:5001',
       {

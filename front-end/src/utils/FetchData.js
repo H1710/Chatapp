@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  credentials: process.env.SERVER_URL ? 'include' : 'same-origin',
-  baseURL: process.env.SERVER_URL
+  credentials: process.env.REACT_APP_SERVER_URL ? 'include' : 'same-origin',
+  baseURL: process.env.REACT_APP_SERVER_URL
     ? 'https://chat-app-be-ptrn.onrender.com'
     : 'http://localhost:5001',
 });
