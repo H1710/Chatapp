@@ -4,6 +4,7 @@ import alert from './alertReducer';
 import socket from './socketReducer';
 import otp from './otpReducer';
 import chatroom from './chatroomReducer';
+import user from './userReducer';
 
 export default combineReducers({
   auth,
@@ -11,4 +12,5 @@ export default combineReducers({
   socket,
   otp,
   chatroom,
+  user,
 });

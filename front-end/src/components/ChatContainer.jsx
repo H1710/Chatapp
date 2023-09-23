@@ -2,22 +2,22 @@ import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import ChatInput from './ChatInput';
 import { sendMessageRoute, getChatroomMessages } from '../utils/APIRoutes';
 import { v4 as uuidv4 } from 'uuid';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import LoadingCompoent from './alert/LoadingCompoent';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../utils/FetchData';
+import { useParams } from 'react-router-dom';
 
-function ChatContainer({ currentChat, onlineUsers }) {
+function ChatContainer() {
   const [messages, setMessages] = useState('');
-  const [arrivalMessages, setArrivalMessages] = useState('');
-  // const [online, setOnline] = useState(onlineUsers);
-  const [date, setDate] = useState(0);
   const scrollRef = useRef();
-  const [minutes, setMinutes] = useState(1);
   const auth = useSelector(state => state.auth.auth);
   const currentRoom = useSelector(state => state.chatroom.currentRoom);
+  const { currentRoomId } = useParams();
+
   const socket = useSelector(state => state.socket.socket);
+  const onlineUsers = useSelector(state => state.user.onlineUsers);
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     setMinutes(minutes => minutes + 1);
@@ -70,16 +70,26 @@ function ChatContainer({ currentChat, onlineUsers }) {
     theme: 'light',
   };
 
-  const { data: dataRoom, isLoading: loadDataRoom } = useQuery({
-    queryKey: ['getMessageRoom', currentRoom._id],
+  const {
+    data: dataRoom,
+    isLoading: loadDataRoom,
+    isError: isExistChatRoom,
+  } = useQuery({
+    queryKey: ['getMessageRoom', currentRoomId],
     queryFn: () => {
-      return getAPI(`${getChatroomMessages}/${currentRoom._id}`);
+      return getAPI(
+        `${getChatroomMessages}/${currentRoomId}`,
+        auth.access_token
+      );
     },
     onSuccess: data => {
       setMessages(data.data.chatroom.messages);
       socket.emit('join-room', {
         chatRoomId: data.data.chatroom._id,
       });
+    },
+    onError: error => {
+      toast.error(error.response.data.message);
     },
     staleTime: Infinity,
     cacheTime: 0,
@@ -137,16 +147,6 @@ function ChatContainer({ currentChat, onlineUsers }) {
   //   handleSetMessages();
   // }, [currentChat]);
 
-  useEffect(() => {
-    // const joinRoom = () => {
-    //   if (currentRoom) {
-    //     socket.emit('join-room', currentRoom);
-    //   }
-    // };
-    // joinRoom();
-    // return () => setMessages([]);
-  }, [currentRoom]);
-
   const {
     mutate: sendMessage,
     isLoading: loadingSendMessage,
@@ -188,7 +188,7 @@ function ChatContainer({ currentChat, onlineUsers }) {
 
   const handleSendMsg = async msg => {
     await sendMessage({
-      chatRoomId: currentRoom._id,
+      chatRoomId: currentRoom?._id,
       senderId: auth._id,
       message: msg,
     });
@@ -217,63 +217,50 @@ function ChatContainer({ currentChat, onlineUsers }) {
     scrollRef?.current?.scrollIntoView({ behaviour: 'smooth' });
   }, [messages]);
 
-  console.log(currentRoom);
   return (
     <>
       <div className="h-[70px] w-full flex flex-row px-4 py-2 justify-between border-b border-[#dbdfe2]">
-        <div className="flex flex-row items-center space-x-4">
-          {currentRoom.userIds.length == 2 ? (
-            <div className="relative text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex rounded-full">
-              <div className="z-10 absolute top-0 left-0">
-                {getAvatarContact(currentRoom) ? (
-                  <img
-                    className="w-[50px] h-[50px] rounded-full object-cover"
-                    src={getAvatarContact(currentRoom)}
-                    alt=""
-                  />
-                ) : (
-                  <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
-                    <p>{getNameContact(currentRoom)[0]}</p>
-                  </div>
-                )}
-                {onlineUsers && onlineUsers[getUserIdContact(currentRoom)] ? (
-                  <div className="absolute z-20 top-10 left-8 bg-[#31a24c] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
-                ) : (
-                  <div className="absolute z-20 top-10 left-8 bg-[#ccc] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
-                )}
+        {!loadDataRoom && !isExistChatRoom && (
+          <div className="flex flex-row items-center space-x-4">
+            {dataRoom?.data.chatroom.userIds.length == 2 ? (
+              <div className="relative text-3xl text-[rgb(249,251,255)] h-[50px] w-[50px] flex rounded-full">
+                <div className="z-10 absolute top-0 left-0">
+                  {getAvatarContact(dataRoom.data.chatroom) ? (
+                    <img
+                      className="w-[50px] h-[50px] rounded-full object-cover"
+                      src={getAvatarContact(dataRoom.data.chatroom)}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="text-3xl text-white h-[50px] w-[50px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
+                      <p>{getNameContact(dataRoom.data.chatroom)[0]}</p>
+                    </div>
+                  )}
+                  {onlineUsers && onlineUsers[getUserIdContact(dataRoom)] ? (
+                    <div className="absolute z-20 top-10 left-8 bg-[#31a24c] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
+                  ) : (
+                    <div className="absolute z-20 top-10 left-8 bg-[#ccc] w-[16px] h-[16px] border-[#242526] border-[3px] rounded-full"></div>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>
-              <img
-                className="w-[50px] h-[50px] rounded-full object-cover "
-                src={'data:image/png;base64, ' + currentRoom.avatar.imageBase64}
-                alt=""
-              />
-            </div>
-          )}
-
-          <p className="text-xl text-[#777777]">
-            {getNameContact(currentRoom)}
-          </p>
-        </div>
-        <div className="flex items-center">
-          {date && !onlineUsers?.includes(currentChat._id) ? (
-            Math.floor(Math.floor(date) + minutes) < 5 ? (
-              <h6>Offlined {date + minutes} minutes ago</h6>
-            ) : Math.floor(date + minutes) < 60 ? (
-              <h6>Offlined {Math.floor(date + minutes)} minutes ago</h6>
-            ) : Math.floor((date + minutes) / 60) < 24 ? (
-              <h6>Offlined {Math.floor((date + minutes) / 60)} hours ago</h6>
             ) : (
-              <h6>
-                Offlined {Math.floor((date + minutes) / (60 * 24))} days ago
-              </h6>
-            )
-          ) : (
-            <h6></h6>
-          )}
-        </div>
+              <div>
+                <img
+                  className="w-[50px] h-[50px] rounded-full object-cover "
+                  src={
+                    'data:image/png;base64, ' +
+                    dataRoom.data.chatroom.avatar.imageBase64
+                  }
+                  alt=""
+                />
+              </div>
+            )}
+
+            <p className="text-xl text-[#777777]">
+              {getNameContact(dataRoom.data.chatroom)}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="chat-messages flex-1 px-3 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
@@ -339,6 +326,7 @@ function ChatContainer({ currentChat, onlineUsers }) {
         )}
       </div>
       <ChatInput handleSendMsg={handleSendMsg} />
+      <ToastContainer />
     </>
   );
 }

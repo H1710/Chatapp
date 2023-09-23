@@ -40,6 +40,7 @@ function Register() {
       toast.error(error.response.data.message, toastOptions);
     },
     onSuccess: data => {
+      toast.success(data.data.message, toastOptions);
       setCurrentStep(2);
     },
   });
@@ -55,6 +56,7 @@ function Register() {
       toast.error(error.response.data.message, toastOptions);
     },
     onSuccess: data => {
+      toast.success(data.data.message, toastOptions);
       setCurrentStep(3);
     },
   });

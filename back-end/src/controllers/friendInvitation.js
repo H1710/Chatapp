@@ -59,7 +59,15 @@ class FriendInvitationController {
       await myUser.save();
       sender.chatroom.push(chatroom._id);
       await sender.save();
-      return res.status(200).send({ message: 'Accept request successfully' });
+
+      const info = await chatroom.populate({
+        path: 'userIds',
+        model: 'User',
+        select: '_id firstname lastname avatar',
+      });
+      return res
+        .status(200)
+        .send({ message: 'Accept request successfully', chatroom: info });
     } catch (error) {
       res
         .status(500)

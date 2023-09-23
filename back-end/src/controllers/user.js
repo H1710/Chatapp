@@ -1,5 +1,4 @@
 const User = require('../entities/user');
-const { Token } = require('../utils/generateToken');
 const FriendInvitation = require('../entities/friendInvitation');
 const cloudinary = require('../utils/cloudinary');
 

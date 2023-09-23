@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
-import LoadingCompoent from './alert/LoadingCompoent';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAPI, postAPI } from '../utils/FetchData';
 import { useMutation, useQuery } from 'react-query';
 import {
@@ -10,10 +9,11 @@ import {
   getNotificationsRoute,
 } from '../utils/APIRoutes';
 import { CircularProgress } from '@mui/material';
+import { addRoom } from '../redux/reducers/authReducer';
 const Notification = () => {
   // const { socket } = useSelector(state => state);
   const auth = useSelector(state => state.auth.auth);
-
+  const dispatch = useDispatch();
   const {
     data: dataNotifications,
     isLoading,
@@ -23,8 +23,8 @@ const Notification = () => {
     queryFn: () => {
       return getAPI(`${getNotificationsRoute}/${auth._id}`);
     },
-    staleTime: 10 * 1000,
-    cacheTime: 5 * 60 * 1000,
+    staleTime: 0,
+    cacheTime: 0,
   });
 
   console.log(dataNotifications);
@@ -70,6 +70,11 @@ const Notification = () => {
       },
       onSuccess: data => {
         toast.success(data.data.message, toastOptions);
+        dispatch(
+          addRoom({
+            chatroom: data.data.chatroom,
+          })
+        );
       },
     });
 
@@ -93,10 +98,10 @@ const Notification = () => {
           </div>
         </>
       ) : (
-        <div className="w-full">
+        <div className="w-full h-[400px]">
           {dataNotifications.data?.user &&
           dataNotifications.data?.user.friends.length !== 0 ? (
-            <div className="flex flex-col gap-2 overflow-y-scroll h-[160px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
+            <div className="flex flex-col gap-2 overflow-y-scroll h-[400px] scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded mb-5">
               {dataNotifications.data?.user.friends.map((contact, index) => {
                 return (
                   <div

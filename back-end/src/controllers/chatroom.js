@@ -58,6 +58,19 @@ class ChatRoomController {
           model: 'User',
           select: '_id firstname lastname avatar',
         });
+
+      const user = req.user;
+      console.log(user);
+      let isJoinChatroom = false;
+      for (let i = 0; i < chatroom.userIds.length; i++) {
+        if (chatroom.userIds[i]._id.equals(user._id)) {
+          isJoinChatroom = true;
+          break;
+        }
+      }
+      if (!isJoinChatroom) {
+        return res.status(400).send({ message: 'Chatroom not valid' });
+      }
       if (!chatroom)
         return res.status(400).send({ message: 'Chatroom not exist' });
       res.status(200).send({ chatroom });

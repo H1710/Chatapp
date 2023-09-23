@@ -20,5 +20,9 @@ router.post(
   AuthController.auth,
   ChatRoomController.createChatroom
 );
-router.get('/:chatRoomId', ChatRoomController.getChatroomMessages);
+router.get(
+  '/:chatRoomId',
+  AuthController.auth,
+  ChatRoomController.getChatroomMessages
+);
 module.exports = router;

@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeRoom } from '../redux/reducers/chatroomReducer';
+import { useNavigate } from 'react-router-dom';
 
 function Message({ onlineUsers }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const currentRoom = useSelector(state => state.chatroom.currentRoom);
   const socket = useSelector(state => state.socket.socket);
 
   const changeCurrentChat = async contact => {
     if (currentRoom) socket.emit('leave-room', currentRoom._id);
-    await dispatch(changeRoom(contact));
+    navigate(`/chatroom/${contact._id}`);
   };
 
   const auth = useSelector(state => state.auth.auth);

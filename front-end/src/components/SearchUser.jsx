@@ -14,8 +14,7 @@ import LoadingCompoent from './alert/LoadingCompoent';
 import { getAPI, postAPI } from '../utils/FetchData';
 import useDebounce from '../hooks/useDebounce';
 import { useMutation, useQuery } from 'react-query';
-function SearchUser({ socket }) {
-  const [currentRequest, setCurrentRequest] = useState([]);
+function SearchUser() {
   const [search, setSearch] = useState('');
 
   const auth = useSelector(state => state.auth.auth);

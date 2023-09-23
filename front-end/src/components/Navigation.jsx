@@ -7,32 +7,17 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { BiSolidBell } from 'react-icons/bi';
 import { PiMagnifyingGlassFill } from 'react-icons/pi';
 import { FiLogOut } from 'react-icons/fi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ChangeInfoForm from './ChangeInfoForm';
 import LogoutForm from './LogoutForm';
+import { useNavigate } from 'react-router-dom';
 
 const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
-  const [currentUserName, setCurrentUserName] = useState(undefined);
-  const [currentUserImage, setCurrentUserImage] = useState(undefined);
   // const [onlineUsers, setOnlineUsers] = useState([]);
-  const [menu, setMenu] = useState(false);
   const [numberNotes, setNumberNotes] = useState(0);
-  const dispatch = useDispatch();
-
+  const auth = useSelector(state => state.auth.auth);
+  const navigate = useNavigate();
   const [openLogout, setOpenLogout] = useState(false);
-
-  const handleSetMenu = () => {
-    setMenu(!menu);
-  };
-
-  useEffect(() => {
-    if (currentUser) {
-      setCurrentUserImage(currentUser.avatar);
-      setCurrentUserName(currentUser.fullname);
-      const notification = JSON.parse(localStorage.getItem('notifications'));
-      // console.log(notification);
-    }
-  }, [currentUser]);
 
   useEffect(() => {
     if (socket?.current) {
@@ -94,7 +79,7 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
       <div className="h-[28%] justify-end flex flex-col">
         <div
           onClick={() => {
-            handleSetNav('info');
+            navigate(`/profile/${auth._id}`);
           }}
           className={`px-[5px] cursor-pointer flex flex-1 items-center justify-center text-white ${
             navSelect === 'info' ? 'bg-[#0043a6]' : ''

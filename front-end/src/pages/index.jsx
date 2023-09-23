@@ -1,32 +1,23 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Contacts from '../components/Contacts';
-import ChatContainer from '../components/ChatContainer';
-import io from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import Navigation from '../components/Navigation';
-import SetInfo from '../components/SetInfo';
 import { useQuery } from 'react-query';
 import { getAPI } from '../utils/FetchData';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { refreshRoute } from '../utils/APIRoutes';
 import Loading from '../components/alert/Loading';
 import { seft } from '../redux/reducers/authReducer';
-import logoHome from '../components/logo/logoHome.png';
-import { setSocket } from '../redux/reducers/socketReducer';
+import { addOnlineUser } from '../redux/reducers/userReducer';
 
-function Chat() {
+function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logged, setLogged] = useState(false);
-  const [contacts, setContacts] = useState([]);
-  const [currentChat, setCurrentChat] = useState(undefined);
   const [navSelect, setNavSelect] = useState('messages');
-  const [onlineUsers, setOnlineUsers] = useState(undefined);
-  const [offlineUsersTime, setOfflineUsersTime] = useState(undefined);
 
-  const currentRoom = useSelector(state => state.chatroom.currentRoom);
   const socket = useSelector(state => state.socket.socket);
 
   const toastOptions = {
@@ -57,10 +48,9 @@ function Chat() {
       dispatch(
         seft({ ...data.data.user, access_token: data.data.access_token })
       );
-      // socket.current = io('https://chat-app-be1.onrender.com/api/v1');
       socket.emit('login', { userId: data.data.user._id });
       socket.on('onlineUser', data => {
-        setOnlineUsers(data.onlineUsers);
+        dispatch(addOnlineUser(data.onlineUsers));
       });
     },
     onError: error => {
@@ -91,51 +81,24 @@ function Chat() {
         <Loading />
       ) : (
         <>
-          <Navigation handleSetNav={handleSetNav} navSelect={navSelect} />
-          {navSelect === 'info' ? (
-            <SetInfo />
-          ) : (
-            <>
-              <Contacts
-                contacts={contacts}
-                currentRoom={currentRoom}
-                socket={socket}
-                onlineUsers={onlineUsers}
-                navSelect={navSelect}
-              />
+          <Navigation navSelect={navSelect} handleSetNav={handleSetNav} />
+          <>
+            <Contacts navSelect={navSelect} />
 
-              <div
-                className={`${
-                  navSelect === 'search-friends' ||
-                  navSelect === 'notifications'
-                    ? 'md:w-0'
-                    : 'md:w-[75%]'
-                } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
-              >
-                {currentRoom ? (
-                  <ChatContainer
-                    currentChat={currentChat}
-                    onlineUsers={onlineUsers}
-                  />
-                ) : (
-                  <div className="flex justify-center items-center h-full">
-                    <img
-                      src={logoHome}
-                      alt=""
-                      className="w-[5rem] h-[5rem] flex items-center content-center"
-                    />
-                    <h2 data-text="CHAT_APP" className="text-[3rem] font-light">
-                      CHAT_APP
-                    </h2>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
+            <div
+              className={`${
+                navSelect === 'search-friends' || navSelect === 'notifications'
+                  ? 'md:w-0'
+                  : 'md:w-[75%]'
+              } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
+            >
+              <Outlet />
+            </div>
+          </>
         </>
       )}
     </div>
   );
 }
 
-export default Chat;
+export default Home;

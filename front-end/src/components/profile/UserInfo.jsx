@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BiEditAlt } from 'react-icons/bi';
 import { AiOutlineCamera } from 'react-icons/ai';
 import { SlOptions } from 'react-icons/sl';
-import ChangeInfoForm from './ChangeInfoForm';
-import ChangeAvatarForm from './ChangeAvatarForm';
+import ChangeInfoForm from '../ChangeInfoForm';
+import ChangeAvatarForm from '../ChangeAvatarForm';
 
-const SetInfo = () => {
-  const dispatch = useDispatch();
+const UserInfo = () => {
   const auth = useSelector(state => state.auth.auth);
   const [openEditInfo, setOpenEditInfo] = useState(false);
   const [openEditAvatar, setOpenEditAvatar] = useState(false);
@@ -16,7 +15,7 @@ const SetInfo = () => {
     <>
       <div className="h-full flex-1 bg-white bg-opacity-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
         {/* Header */}
-        <div className="border-b-2 border-[#dbdfe2] px-40 shadow-sm">
+        <div className="border-b-2 border-[#dbdfe2] px-20 shadow-sm">
           <div className=" w-full flex items-center gap-2 mt-6 pb-3 px-10 justify-between border-b border-[#dbdfe2]">
             <div className="flex flex-row gap-10 justify-center items-center">
               {auth.avatar ? (
@@ -113,7 +112,7 @@ const SetInfo = () => {
         </div>
 
         {/* Body */}
-        <div className="px-52 flex gap-4 bg-[#f0f2f5] pt-3">
+        <div className="px-32 flex gap-4 bg-[#f0f2f5] pt-3">
           <div className="flex flex-col gap-4">
             {/* Images */}
             <div className="bg-white p-3 rounded shadow-sm">
@@ -189,4 +188,4 @@ const SetInfo = () => {
   );
 };
 
-export default SetInfo;
+export default UserInfo;

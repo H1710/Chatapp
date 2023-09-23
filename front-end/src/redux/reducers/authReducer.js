@@ -18,9 +18,12 @@ export const AuthSlice = createSlice({
       state.auth.gender = action.payload.gender;
       state.auth.birthday = action.payload.birthday;
     },
+    addRoom: (state, action) => {
+      state.auth.chatroom.push(action.payload.chatroom);
+    },
   },
 });
 
-export const { seft, changeAvatar, changeInfo } = AuthSlice.actions;
+export const { seft, changeAvatar, changeInfo, addRoom } = AuthSlice.actions;
 
 export default AuthSlice.reducer;

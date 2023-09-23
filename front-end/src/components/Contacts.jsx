@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import CreateGroupForm from './CreateGroupForm';
 
-function Contacts({ onlineUsers, navSelect }) {
+function Contacts({ navSelect }) {
   const [numberNotes, setNumberNotes] = useState(0);
 
   const auth = useSelector(state => state.auth.auth);
@@ -18,6 +18,9 @@ function Contacts({ onlineUsers, navSelect }) {
   //     });
   //   }
   // }, [socket.current]);
+
+  const onlineUsers = useSelector(state => state.user.onlineUsers);
+  console.log(onlineUsers);
 
   return (
     <div
