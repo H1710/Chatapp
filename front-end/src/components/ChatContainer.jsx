@@ -13,7 +13,6 @@ function ChatContainer() {
   const [messages, setMessages] = useState('');
   const scrollRef = useRef();
   const auth = useSelector(state => state.auth.auth);
-  const currentRoom = useSelector(state => state.chatroom.currentRoom);
   const { currentRoomId } = useParams();
 
   const socket = useSelector(state => state.socket.socket);
@@ -188,7 +187,7 @@ function ChatContainer() {
 
   const handleSendMsg = async msg => {
     await sendMessage({
-      chatRoomId: currentRoom?._id,
+      chatRoomId: currentRoomId,
       senderId: auth._id,
       message: msg,
     });

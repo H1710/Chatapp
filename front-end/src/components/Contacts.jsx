@@ -20,7 +20,6 @@ function Contacts({ navSelect }) {
   // }, [socket.current]);
 
   const onlineUsers = useSelector(state => state.user.onlineUsers);
-  console.log(onlineUsers);
 
   return (
     <div
