@@ -20,9 +20,14 @@ import Profile from './components/profile';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    const socket = io.connect('https://chat-app-be-ptrn.onrender.com', {
-      reconnect: true,
-    });
+    const socket = io.connect(
+      process.env.SERVER_URL
+        ? 'https://chat-app-be-ptrn.onrender.com'
+        : 'http://localhost:5001',
+      {
+        reconnect: true,
+      }
+    );
     dispatch(setSocket(socket));
     return () => {
       socket.close();

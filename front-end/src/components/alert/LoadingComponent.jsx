@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LoadingCompoent = () => {
+const LoadingComponet = () => {
   return (
     <div role="status" className="flex items-center justify-center h-full">
       <svg
@@ -19,9 +19,9 @@ const LoadingCompoent = () => {
           fill="currentFill"
         />
       </svg>
-      <span class="sr-only">Loading...</span>
+      <span className="sr-only">Loading...</span>
     </div>
   );
 };
 
-export default LoadingCompoent;
+export default LoadingComponet;

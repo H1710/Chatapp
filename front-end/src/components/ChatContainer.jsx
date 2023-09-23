@@ -4,7 +4,7 @@ import { sendMessageRoute, getChatroomMessages } from '../utils/APIRoutes';
 import { v4 as uuidv4 } from 'uuid';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import LoadingCompoent from './alert/LoadingCompoent';
+import LoadingCompoent from './alert/LoadingComponent';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../utils/FetchData';
 import { useParams } from 'react-router-dom';

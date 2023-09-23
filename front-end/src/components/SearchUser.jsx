@@ -10,7 +10,7 @@ import {
 } from '../utils/APIRoutes';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import LoadingCompoent from './alert/LoadingCompoent';
+import LoadingCompoent from './alert/LoadingComponent';
 import { getAPI, postAPI } from '../utils/FetchData';
 import useDebounce from '../hooks/useDebounce';
 import { useMutation, useQuery } from 'react-query';

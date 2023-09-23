@@ -1,19 +1,16 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { patchAPI, postAPI } from '../utils/FetchData';
+import { postAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
-import { changeInfoRoute, createChatroomRoute } from '../utils/APIRoutes';
+import { createChatroomRoute } from '../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
-import { changeInfo } from '../redux/reducers/authReducer';
-import { AiOutlineCamera } from 'react-icons/ai';
-import ChangeAvatarForm from './ChangeAvatarForm';
 import ChangeAvatarGroupForm from './ChangeAvatarGroupForm';
 import { CircularProgress } from '@mui/material';
+import { AiOutlineCamera } from 'react-icons/ai';
 
 const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
   const auth = useSelector(state => state.auth.auth);
-  const dispatch = useDispatch();
 
   const [name, setName] = useState('');
   const [search, setSearch] = useState('');

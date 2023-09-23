@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { patchAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
-import { avatarRoute, changeInfoRoute } from '../utils/APIRoutes';
+import { avatarRoute } from '../utils/APIRoutes';
 import { toast, ToastContainer } from 'react-toastify';
 import ImageCropDialog from './ImageCropDialog';
 import { changeAvatar } from '../redux/reducers/authReducer';

@@ -60,7 +60,6 @@ class ChatRoomController {
         });
 
       const user = req.user;
-      console.log(user);
       let isJoinChatroom = false;
       for (let i = 0; i < chatroom.userIds.length; i++) {
         if (chatroom.userIds[i]._id.equals(user._id)) {

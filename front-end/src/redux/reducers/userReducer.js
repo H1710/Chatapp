@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 export const UserSlice = createSlice({
   name: 'user',
   initialState: {
-    onlineUsers: [],
+    onlineUsers: {},
   },
   reducers: {
     addOnlineUser: (state, action) => {
-      state.onlineUsers.push(...action.payload);
+      state.onlineUsers = action.payload;
     },
   },
 });

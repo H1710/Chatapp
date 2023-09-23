@@ -1,11 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { patchAPI, postAPI } from '../utils/FetchData';
+import { useSelector } from 'react-redux';
+import { postAPI } from '../utils/FetchData';
 import { useMutation } from 'react-query';
-import { changeInfoRoute, logoutRoute } from '../utils/APIRoutes';
+import { logoutRoute } from '../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
-import { changeInfo } from '../redux/reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
 
 const LogoutForm = ({ openLogout, setOpenLogout }) => {
