@@ -1,5 +1,5 @@
-export const host = 'https://chat-app-be-ptrn.onrender.com/api/v1';
-// export const host = 'http://localhost:5001/api/v1';
+// export const host = 'https://chat-app-be-ptrn.onrender.com/api/v1';
+export const host = 'http://localhost:5001/api/v1';
 
 export const registerRoute = `${host}/user/register`;
 export const firstStepRegisterationRoute = `${host}/auth/first-step-registeration`;

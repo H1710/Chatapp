@@ -3,10 +3,10 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  credentials: 'include',
-  // credentials: 'same-origin',
+  // credentials: 'include',
+  credentials: 'same-origin',
   // baseURL: 'http://localhost:5001',
-  baseURL: 'https://chat-app-be-ptrn.onrender.com',
+  // baseURL: 'https://chat-app-be-ptrn.onrender.com',
 });
 
 export const postAPI = async (url, info, token) => {
