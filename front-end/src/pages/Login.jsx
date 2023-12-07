@@ -52,7 +52,7 @@ function Login() {
     onSuccess: data => {
       toast.success(data.data.message, toastOptions);
       localStorage.setItem('signed', 'chat-app');
-      navigate('/');
+      navigate('/home');
     },
   });
 
@@ -117,7 +117,7 @@ function Login() {
               <button
                 type="submit"
                 disabled={loadingLogin}
-                class="block text-center text-white bg-[#3386ff] p-3 duration-300 rounded-sm hover:bg-[#0068ff] w-full"
+                class="block text-center text-white bg-[#3386ff] hover:bg-[#0068ff] p-3 duration-300 rounded-sm  w-full"
               >
                 {loadingLogin ? (
                   <div className="flex items-center justify-center gap-1">
@@ -130,13 +130,13 @@ function Login() {
               </button>
             </form>
 
-            <div class=" gap-2 mt-7">
+            {/* <div class=" gap-2 mt-7">
               <div>
                 <button class="block text-center text-black p-3 duration-300 rounded-sm hover:bg-slate-200 w-full border border-green">
                   Google
                 </button>
               </div>
-            </div>
+            </div> */}
             <p class="mt-12 text-sm text-center font-light text-gray-400">
               {' '}
               Don't have an account?{' '}

@@ -9,11 +9,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
+import { Icon } from "@rneui/themed";
 
-const RegisterScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const OTPScreen = () => {
+  const [otpCode, setOtpCode] = useState("");
   const navigation = useNavigation();
   const handleLogin = () => {};
   return (
@@ -24,6 +23,17 @@ const RegisterScreen = () => {
         alignItems: "center",
       }}
     >
+      <Stack.Screen
+        options={{
+          title: "",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "blue",
+          },
+          headerShadowVisible: false,
+          headerLeft: () => <Icon name="rowing" />,
+        }}
+      />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={{ alignItems: "center" }}>
           <Text
@@ -54,8 +64,8 @@ const RegisterScreen = () => {
             }}
           >
             <TextInput
-              value={email}
-              onChangeText={(text) => setEmail(text)}
+              value={otpCode}
+              onChangeText={(text) => setOtpCode(text)}
               style={[
                 {
                   paddingLeft: 5,
@@ -66,73 +76,7 @@ const RegisterScreen = () => {
                 },
                 styles.text,
               ]}
-              placeholder="Enter your Email"
-            />
-          </View>
-        </View>
-
-        <View style={{ marginTop: 10 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              borderBottomWidth: 2,
-              borderColor: "#81aded",
-              paddingVertical: 8,
-              paddingHorizontal: 6,
-              borderRadius: 5,
-              marginTop: 30,
-            }}
-          >
-            <TextInput
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry={true}
-              style={[
-                {
-                  paddingLeft: 5,
-                  color: "gray",
-                  marginVertical: 10,
-                  width: 300,
-                  fontSize: 16,
-                },
-                styles.text,
-              ]}
-              placeholder="Enter your Password"
-            />
-          </View>
-        </View>
-
-        <View style={{ marginTop: 10 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              borderBottomWidth: 2,
-              borderColor: "#81aded",
-              paddingVertical: 8,
-              paddingHorizontal: 6,
-              borderRadius: 5,
-              marginTop: 30,
-            }}
-          >
-            <TextInput
-              value={confirmPassword}
-              onChangeText={(text) => setConfirmPassword(text)}
-              secureTextEntry={true}
-              style={[
-                {
-                  paddingLeft: 5,
-                  color: "gray",
-                  marginVertical: 10,
-                  width: 300,
-                  fontSize: 16,
-                },
-                styles.text,
-              ]}
-              placeholder="Confirm your password"
+              placeholder="Enter OTP code"
             />
           </View>
         </View>
@@ -170,7 +114,7 @@ const RegisterScreen = () => {
               },
             ]}
           >
-            Register
+            Submit
           </Text>
         </Pressable>
 
@@ -179,7 +123,7 @@ const RegisterScreen = () => {
           style={{ marginTop: 15 }}
         >
           <Text style={[{ textAlign: "center", color: "gray" }, styles.text]}>
-            Already have an account? Sign in
+            OTP has not been sent? Resend now
           </Text>
         </Pressable>
       </KeyboardAvoidingView>
@@ -187,7 +131,7 @@ const RegisterScreen = () => {
   );
 };
 
-export default RegisterScreen;
+export default OTPScreen;
 
 const styles = StyleSheet.create({
   text: {

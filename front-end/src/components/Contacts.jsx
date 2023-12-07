@@ -23,14 +23,14 @@ function Contacts({ navSelect }) {
 
   return (
     <div
-      className={`lg:w-[440px] ${
+      className={`lg:w-[400px] ${
         navSelect === 'search-friends' || navSelect === 'notifications'
           ? 'w-full'
           : 'w-[75px]'
       } lg:py-5 bg-[#FFFFFF] h-full overflow-hidden`}
     >
       <div className="">
-        <div className="relative lg:flex hidden flex-col space-x-4 items-center gap-2 h-[30%] pb-6 border-b border-[#dbdfe2]">
+        <div className="relative lg:flex hidden flex-col items-center gap-2 h-[30%] pb-6">
           {auth?.avatar ? (
             <img
               src={auth.avatar}
@@ -43,9 +43,9 @@ function Contacts({ navSelect }) {
             </div>
           )}
 
-          <p className="text-2xl text-[#33485c] font-normal truncate w-full text-center">
+          <span className="text-2xl text-[#33485c] font-normal truncate w-full text-center">
             {auth.firstname + ' ' + auth.lastname}
-          </p>
+          </span>
           <HiOutlineUserGroup
             size={32}
             className="absolute top-0 right-3 cursor-pointer w-8 h-8 hover:text-blue-800"

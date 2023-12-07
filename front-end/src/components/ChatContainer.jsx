@@ -13,53 +13,9 @@ function ChatContainer() {
   const [messages, setMessages] = useState('');
   const scrollRef = useRef();
   const auth = useSelector(state => state.auth.auth);
-  const { currentRoomId } = useParams();
 
   const socket = useSelector(state => state.socket.socket);
   const onlineUsers = useSelector(state => state.user.onlineUsers);
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setMinutes(minutes => minutes + 1);
-  //   }, 60000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  // useEffect(() => {
-  //   // console.log(offlineUsersTime);
-  //   // if (currentChat?._id)
-  //   //   console.log(Date.now() - Date(offlineUsersTime[currentChat._id]));
-  //   if (currentChat?._id) {
-  //     const handleDate = () => {
-  //       let utcDate = new Date(offlineUsersTime[currentChat._id]);
-  //       let now = new Date();
-  //       // console.log(
-  //       //   Math.max(
-  //       //     1,
-  //       //     Math.floor((now.getTime() - utcDate.getTime()) / (1000 * 60))
-  //       //   )
-  //       // );
-  //       setDate(
-  //         Math.max(
-  //           1,
-  //           Math.floor((now.getTime() - utcDate.getTime()) / (1000 * 60))
-  //         )
-  //       );
-  //       setMinutes(0);
-  //     };
-  //     handleDate();
-  //   } else {
-  //     setDate(false);
-  //   }
-  // }, [currentChat]);
-
-  // useEffect(() => {
-  //   if (currentChat?._id && !onlineUsers?.includes(currentChat._id)) {
-  //     setDate(1);
-  //     setMinutes(0);
-  //   } else {
-  //     setDate(null);
-  //   }
-  // }, [onlineUsers]);
 
   const toastOptions = {
     position: 'top-right',
@@ -68,6 +24,7 @@ function ChatContainer() {
     draggable: true,
     theme: 'light',
   };
+  const { currentRoomId } = useParams();
 
   const {
     data: dataRoom,
@@ -87,11 +44,16 @@ function ChatContainer() {
         chatRoomId: data.data.chatroom._id,
       });
     },
-    onError: error => {
-      toast.error(error.response.data.message);
+    onError: (error, variables, context) => {
+      if (error.response?.status === 404) {
+        toast.error('Chat room not found.');
+      } else {
+        toast.error('An error occurred while fetching chat room data.');
+      }
     },
     staleTime: Infinity,
     cacheTime: 0,
+    enabled: currentRoomId ? true : false,
   });
 
   const getNameContact = contact => {
@@ -247,10 +209,7 @@ function ChatContainer() {
               <div>
                 <img
                   className="w-[50px] h-[50px] rounded-full object-cover "
-                  src={
-                    'data:image/png;base64, ' +
-                    dataRoom.data.chatroom.avatar.imageBase64
-                  }
+                  src={dataRoom.data.chatroom.avatar}
                   alt=""
                 />
               </div>
@@ -264,7 +223,7 @@ function ChatContainer() {
       </div>
 
       <div className="chat-messages flex-1 px-3 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
-        {loadDataRoom ? (
+        {loadDataRoom || !dataRoom ? (
           <LoadingCompoent />
         ) : (
           <>
@@ -299,7 +258,7 @@ function ChatContainer() {
                           className="flex w-[20px] h-[20px] border-[1px] border-[#79C7C5] rounded-full"
                         />
                       ) : (
-                        <div className="text-xl text-white h-[24px] w-[24px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
+                        <div className="text-xl text-white h-[20px] w-[20px] flex items-center justify-center m-auto rounded-full bg-[#66a4ff]">
                           <p>{message.senderId.firstname[0]}</p>
                         </div>
                       )}

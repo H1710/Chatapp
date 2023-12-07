@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { postAPI } from '../utils/FetchData';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { createChatroomRoute } from '../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
 import ChangeAvatarGroupForm from './ChangeAvatarGroupForm';
@@ -19,6 +19,7 @@ const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
   const [openEditAvatar, setOpenEditAvatar] = useState(false);
   const [avatar, setAvatar] = useState('');
   const [image, setImage] = useState('');
+  const queryClient = useQueryClient();
 
   const [friends, setFriends] = useState(
     auth?.friends
@@ -83,6 +84,7 @@ const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
     },
     onSuccess: data => {
       setOpenGroupForm(false);
+      queryClient.invalidateQueries(['refresh_token']);
       toast.success(data.data.message, toastOptions);
     },
   });

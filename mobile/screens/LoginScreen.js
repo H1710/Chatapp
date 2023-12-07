@@ -33,7 +33,7 @@ const LoginScreen = () => {
             style={{
               fontSize: 50,
               fontWeight: "thin",
-              marginTop: 80,
+              marginTop: 60,
               color: "#132339",
               fontFamily: "Poppins-Bold",
             }}
@@ -74,7 +74,7 @@ const LoginScreen = () => {
                   color: "gray",
                   marginVertical: 10,
                   width: 300,
-                  fontSize: email ? 16 : 16,
+                  fontSize: 16,
                 },
                 styles.text,
               ]}
@@ -101,18 +101,16 @@ const LoginScreen = () => {
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
-              style={
-                ([
-                  {
-                    paddingLeft: 5,
-                    color: "gray",
-                    marginVertical: 10,
-                    width: 300,
-                    color: "#007FFF",
-                  },
-                ],
-                styles.text)
-              }
+              style={[
+                {
+                  paddingLeft: 5,
+                  color: "gray",
+                  marginVertical: 10,
+                  width: 300,
+                  fontSize: 16,
+                },
+                styles.text,
+              ]}
               placeholder="Enter your Password"
             />
           </View>

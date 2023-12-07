@@ -1,8 +1,8 @@
 import React from 'react';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAPI, postAPI } from '../utils/FetchData';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   acceptRequestRoute,
   cancelRequestRoute,
@@ -14,6 +14,8 @@ const Notification = () => {
   // const { socket } = useSelector(state => state);
   const auth = useSelector(state => state.auth.auth);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
   const {
     data: dataNotifications,
     isLoading,
@@ -21,13 +23,11 @@ const Notification = () => {
   } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => {
-      return getAPI(`${getNotificationsRoute}/${auth._id}`);
+      return getAPI(`${getNotificationsRoute}/${auth?._id}`);
     },
     staleTime: 0,
     cacheTime: 0,
   });
-
-  console.log(dataNotifications);
 
   const toastOptions = {
     position: 'top-right',
@@ -46,6 +46,8 @@ const Notification = () => {
         toast.error(error.response.data.message, toastOptions);
       },
       onSuccess: data => {
+        queryClient.invalidateQueries(['notifications']);
+        queryClient.invalidateQueries(['refresh_token']);
         toast.success(data.data.message, toastOptions);
       },
     });
@@ -70,11 +72,8 @@ const Notification = () => {
       },
       onSuccess: data => {
         toast.success(data.data.message, toastOptions);
-        dispatch(
-          addRoom({
-            chatroom: data.data.chatroom,
-          })
-        );
+        queryClient.invalidateQueries(['refresh_token']);
+        queryClient.invalidateQueries(['notifications']);
       },
     });
 
@@ -84,7 +83,6 @@ const Notification = () => {
         myId: auth._id,
         senderId: sender.senderId._id,
       });
-      sender.status = 3;
     } catch (err) {}
   };
 
@@ -135,22 +133,31 @@ const Notification = () => {
                         <p>Cancelled</p>
                       ) : (
                         <>
-                          <button
-                            onClick={() => {
-                              handleAcceptRequest(contact);
-                            }}
-                            className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
-                          >
-                            Agree
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleCancelRequest(contact);
-                            }}
-                            className="w-20 h-10 bg-[#eaedf0] hover:bg-[#dfe2e7] text-center"
-                          >
-                            Cancel
-                          </button>
+                          {loadingAcceptRequest || loadingCancelRequest ? (
+                            <div className="flex items-center justify-center gap-1">
+                              Loading...
+                              <CircularProgress size={20} color="inherit" />
+                            </div>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => {
+                                  handleAcceptRequest(contact);
+                                }}
+                                className="w-20 h-10 bg-[#e5efff] hover:bg-[#c7e0ff] text-center text-[#005ae0]"
+                              >
+                                Agree
+                              </button>
+                              <button
+                                onClick={() => {
+                                  handleCancelRequest(contact);
+                                }}
+                                className="w-20 h-10 bg-[#eaedf0] hover:bg-[#dfe2e7] text-center"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>
@@ -163,6 +170,7 @@ const Notification = () => {
           )}
         </div>
       )}
+      <ToastContainer />
     </>
   );
 };

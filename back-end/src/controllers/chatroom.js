@@ -57,7 +57,8 @@ class ChatRoomController {
           path: 'userIds',
           model: 'User',
           select: '_id firstname lastname avatar',
-        });
+        })
+        .select('name avatar');
 
       const user = req.user;
       let isJoinChatroom = false;
