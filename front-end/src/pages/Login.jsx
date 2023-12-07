@@ -93,6 +93,7 @@ function Login() {
                   class="rounded-sm px-4 py-3 mt-1 focus:outline-none bg-gray-100 w-full"
                   placeholder="Email"
                   name="email"
+                  value={values.email}
                   required
                   onChange={e => handleChange(e)}
                 />
@@ -106,6 +107,7 @@ function Login() {
                   class="rounded-sm px-4 py-3 mt-1 focus:outline-none bg-gray-100 w-full"
                   placeholder="Password"
                   name="password"
+                  value={values.password}
                   required
                   onChange={e => handleChange(e)}
                 />
