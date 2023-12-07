@@ -13,8 +13,8 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [values, setValues] = useState({
-    email: '',
-    password: '',
+    email: 'user1@gmail.com',
+    password: '@User123',
   });
 
   const { isLoading } = useQuery({
