@@ -14,7 +14,7 @@ function Message({ onlineUsers }) {
   const changeCurrentChat = async contact => {
     if (currentRoom) socket.emit('leave-room', currentRoom._id);
     setCurrentRoom(contact._id);
-    navigate(`/chatroom/${contact._id}`);
+    navigate(`/home/chatroom/${contact._id}`);
   };
 
   const auth = useSelector(state => state.auth.auth);

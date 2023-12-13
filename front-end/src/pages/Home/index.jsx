@@ -69,26 +69,22 @@ function Home() {
 
   return (
     <div className="flex flex-row items-center justify-center w-full h-[100vh] bg-blue-300 bg-opacity-30">
-      {isLoading || !logged ? (
-        <Loading />
-      ) : (
+      <>
+        <Navigation navSelect={navSelect} handleSetNav={handleSetNav} />
         <>
-          <Navigation navSelect={navSelect} handleSetNav={handleSetNav} />
-          <>
-            <Contacts navSelect={navSelect} />
+          <Contacts navSelect={navSelect} />
 
-            <div
-              className={`${
-                navSelect === 'search-friends' || navSelect === 'notifications'
-                  ? 'md:w-0'
-                  : 'md:w-[75%]'
-              } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
-            >
-              <Outlet />
-            </div>
-          </>
+          <div
+            className={`${
+              navSelect === 'search-friends' || navSelect === 'notifications'
+                ? 'md:w-0'
+                : 'md:w-[75%]'
+            } bg-white h-full flex-1 flex flex-col justify-between overflow-hidden border-l border-[#dbdfe2]`}
+          >
+            <Outlet />
+          </div>
         </>
-      )}
+      </>
       <ToastContainer />
     </div>
   );

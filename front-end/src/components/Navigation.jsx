@@ -64,10 +64,8 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
         ))}
       </div>
       <div className="justify-end flex flex-col">
-        <div
-          onClick={() => {
-            navigate(`/profile/${auth._id}`);
-          }}
+        {/* <div
+          onClick={() => {}}
           className={`flex cursor-pointer items-center justify-center font-bold text-white p-2`}
         >
           <div
@@ -75,7 +73,7 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
           >
             <AiOutlineUser fontSize={30} />
           </div>
-        </div>
+        </div> */}
         <div
           onClick={() => {
             setOpenLogout(true);

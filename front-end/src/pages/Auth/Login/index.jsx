@@ -26,7 +26,7 @@ function Login() {
       dispatch(
         seft({ ...data.data.user, access_token: data.data.access_token })
       );
-      navigate('/');
+      navigate('/home');
     },
     onError: error => {
       toast.error(error.response.data.message);

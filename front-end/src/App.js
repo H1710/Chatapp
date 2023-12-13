@@ -1,3 +1,4 @@
+import React, { Suspense, lazy, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   createBrowserRouter,
@@ -7,13 +8,14 @@ import {
 import { useDispatch } from 'react-redux';
 import { setSocket } from './redux/reducers/socketReducer';
 import { io } from 'socket.io-client';
-import { useEffect } from 'react';
-import Home from './pages/Home/index.jsx';
-import Login from './pages/Auth/Login/index.jsx';
-import Register from './pages/Auth/Register/index.jsx';
-import ChatContainer from './components/ChatContainer';
-import IntroComponent from './components/IntroComponent';
-import Profile from './components/Profile/index.jsx';
+import Loading from './components/alert/Loading.jsx';
+
+const Home = lazy(() => import('./pages/Home/index.jsx'));
+const Login = lazy(() => import('./pages/Auth/Login/index.jsx'));
+const Register = lazy(() => import('./pages/Auth/Register/index.jsx'));
+const ChatContainer = lazy(() => import('./components/ChatContainer'));
+const IntroComponent = lazy(() => import('./components/IntroComponent'));
+const Profile = lazy(() => import('./components/Profile/index.jsx'));
 
 function App() {
   const dispatch = useDispatch();
@@ -31,28 +33,48 @@ function App() {
       socket.close();
     };
   }, [dispatch]);
+
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Home />,
       children: [
-        { index: true, element: <Navigate to="/home" replace /> },
-        { path: '/home', element: <IntroComponent /> },
-        { path: 'chatroom/:currentRoomId', element: <ChatContainer /> },
-        { path: 'profile/:userId', element: <Profile /> },
+        { index: true, element: <Navigate to="/login" replace /> },
+        {
+          path: '/login',
+          element: (
+            <Suspense fallback={<Loading />}>
+              <Login />
+            </Suspense>
+          ),
+        },
       ],
-      // errorElement: <ErrorPage />,
     },
-
     {
-      path: '/login',
-      element: <Login />,
-      // errorElement: <ErrorPage />,
+      path: '/home',
+      element: (
+        <Suspense fallback={<Loading />}>
+          <Home />
+        </Suspense>
+      ),
+      children: [
+        { element: <IntroComponent />, index: true },
+        {
+          path: 'chatroom/:currentRoomId',
+          element: (
+            <Suspense fallback={<Loading />}>
+              <ChatContainer />
+            </Suspense>
+          ),
+        },
+      ],
     },
     {
       path: '/register',
-      element: <Register />,
-      // errorElement: <ErrorPage />,
+      element: (
+        <Suspense fallback={<Loading />}>
+          <Register />
+        </Suspense>
+      ),
     },
   ]);
 
