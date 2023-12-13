@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TopBar from '../../../components/Register/TopBar';
 import FirstStep from '../../../components/Register/FirstStep';
 import ConfirmOTP from '../../../components/Register/ConfirmOTP';
