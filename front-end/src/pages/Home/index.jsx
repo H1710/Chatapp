@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import Contacts from '../components/Contacts';
+import Contacts from '../../components/Contacts';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import Navigation from '../components/Navigation';
+import Navigation from '../../components/Navigation';
 import { useQuery } from 'react-query';
-import { getAPI } from '../utils/FetchData';
-import { toast } from 'react-toastify';
-import { refreshRoute } from '../utils/APIRoutes';
-import Loading from '../components/alert/Loading';
-import { seft } from '../redux/reducers/authReducer';
-import { addOnlineUser } from '../redux/reducers/userReducer';
+import { getAPI } from '../../utils/FetchData';
+import { ToastContainer, toast } from 'react-toastify';
+import { refreshRoute } from '../../utils/APIRoutes';
+import Loading from '../../components/alert/Loading';
+import { seft } from '../../redux/reducers/authReducer';
+import { addOnlineUser } from '../../redux/reducers/userReducer';
 
 function Home() {
   const navigate = useNavigate();
@@ -19,14 +19,6 @@ function Home() {
   const [navSelect, setNavSelect] = useState('messages');
 
   const socket = useSelector(state => state.socket.socket);
-
-  const toastOptions = {
-    position: 'top-right',
-    autoClose: 3000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: 'light',
-  };
 
   useEffect(() => {
     const checkUser = async () => {
@@ -54,7 +46,7 @@ function Home() {
       });
     },
     onError: error => {
-      toast.error(error.response.data.message, toastOptions);
+      toast.error(error.response.data.message);
     },
     enabled: logged,
   });
@@ -97,6 +89,7 @@ function Home() {
           </>
         </>
       )}
+      <ToastContainer />
     </div>
   );
 }

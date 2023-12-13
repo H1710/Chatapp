@@ -8,12 +8,12 @@ import { useDispatch } from 'react-redux';
 import { setSocket } from './redux/reducers/socketReducer';
 import { io } from 'socket.io-client';
 import { useEffect } from 'react';
-import Home from './pages';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Home from './pages/Home/index.jsx';
+import Login from './pages/Auth/Login/index.jsx';
+import Register from './pages/Auth/Register/index.jsx';
 import ChatContainer from './components/ChatContainer';
 import IntroComponent from './components/IntroComponent';
-import Profile from './components/profile';
+import Profile from './components/Profile/index.jsx';
 
 function App() {
   const dispatch = useDispatch();

@@ -1,4 +1,3 @@
-// export const host = 'https://chat-app-be-ptrn.onrender.com/api/v1';
 export const host = process.env.REACT_APP_SERVER_URL
   ? process.env.REACT_APP_SERVER_URL + '/api/v1'
   : 'http://localhost:5001/api/v1';
