@@ -15,7 +15,6 @@ const Login = lazy(() => import('./pages/Auth/Login/index.jsx'));
 const Register = lazy(() => import('./pages/Auth/Register/index.jsx'));
 const ChatContainer = lazy(() => import('./components/ChatContainer'));
 const IntroComponent = lazy(() => import('./components/IntroComponent'));
-const Profile = lazy(() => import('./components/Profile/index.jsx'));
 
 function App() {
   const dispatch = useDispatch();
