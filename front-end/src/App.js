@@ -8,13 +8,13 @@ import {
 import { useDispatch } from 'react-redux';
 import { setSocket } from './redux/reducers/socketReducer';
 import { io } from 'socket.io-client';
-import Loading from './components/alert/Loading.jsx';
+import Loading from './components/Alert/Loading.jsx';
+import MainLayout from './layouts/MainLayout.jsx';
 
 const Home = lazy(() => import('./pages/Home/index.jsx'));
 const Login = lazy(() => import('./pages/Auth/Login/index.jsx'));
 const Register = lazy(() => import('./pages/Auth/Register/index.jsx'));
 const ChatContainer = lazy(() => import('./components/ChatContainer'));
-const IntroComponent = lazy(() => import('./components/IntroComponent'));
 
 function App() {
   const dispatch = useDispatch();
@@ -52,11 +52,11 @@ function App() {
       path: '/home',
       element: (
         <Suspense fallback={<Loading />}>
-          <Home />
+          <MainLayout />
         </Suspense>
       ),
       children: [
-        { element: <IntroComponent />, index: true },
+        { element: <Home />, index: true },
         {
           path: 'chatroom/:currentRoomId',
           element: (

@@ -4,7 +4,7 @@ import { sendMessageRoute, getChatroomMessages } from '../utils/APIRoutes';
 import { v4 as uuidv4 } from 'uuid';
 import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import LoadingCompoent from './alert/LoadingComponent';
+import LoadingComponent from './Alert/LoadingComponent';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../utils/FetchData';
 import { useParams } from 'react-router-dom';
@@ -87,26 +87,6 @@ function ChatContainer() {
       }
     }
   };
-
-  // if (isLoading) console.log(data);
-
-  // useLayoutEffect(() => {
-  //   const handleSetMessages = async () => {
-  //     if (currentChat) {
-  //       setMessages([]);
-  //       dispatch({ type: 'ALERT', payload: { loading: true } });
-  //       const myId = auth._id;
-  //       const response = await axios.post(
-  //         `${getMessagesRoute}/${currentRoom}`,
-  //         { myId }
-  //       );
-  //       setMessages(response.data.data);
-  //       dispatch({ type: 'ALERT', payload: { loading: false } });
-  //     }
-  //   };
-
-  //   handleSetMessages();
-  // }, [currentChat]);
 
   const {
     mutate: sendMessage,
@@ -224,7 +204,7 @@ function ChatContainer() {
 
       <div className="chat-messages flex-1 px-3 py-4 space-y-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
         {loadDataRoom || !dataRoom ? (
-          <LoadingCompoent />
+          <LoadingComponent />
         ) : (
           <>
             {messages &&

@@ -7,11 +7,11 @@ import { BiSolidBell } from 'react-icons/bi';
 import { PiMagnifyingGlassFill } from 'react-icons/pi';
 import { FiLogOut } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import ChangeInfoForm from './ChangeInfoForm';
-import LogoutForm from './LogoutForm';
+import ChangeInfoForm from '../ChangeInfoForm';
+import LogoutForm from '../LogoutForm';
 import { useNavigate } from 'react-router-dom';
 
-const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
+const NavigationBar = ({ currentUser, socket, handleSetNav, navSelect }) => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
   const [numberNotes, setNumberNotes] = useState(0);
   const auth = useSelector(state => state.auth.auth);
@@ -44,7 +44,7 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
     },
   ];
   return (
-    <div className="h-full justify-between flex flex-col bg-[#2196f3] overflow-hidden border-black shadow-sm py-3">
+    <div className="h-full justify-between flex flex-col bg-[#2196f3] overflow-hidden border-black shadow-sm">
       <div className="justify-start flex flex-col">
         {navTopItem.map(item => (
           <div
@@ -92,4 +92,4 @@ const Navigation = ({ currentUser, socket, handleSetNav, navSelect }) => {
   );
 };
 
-export default Navigation;
+export default NavigationBar;

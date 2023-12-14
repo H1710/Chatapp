@@ -5,7 +5,7 @@ import { loginRoute, refreshRoute } from '../../../utils/APIRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation, useQuery } from 'react-query';
 import { getAPI, postAPI } from '../../../utils/FetchData';
-import Loading from '../../../components/alert/Loading';
+import Loading from '../../../components/Alert/Loading';
 import { seft } from '../../../redux/reducers/authReducer';
 import LoginForm from './LoginForm';
 
