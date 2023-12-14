@@ -60,7 +60,7 @@ function App() {
         {
           path: 'chatroom/:currentRoomId',
           element: (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<></>}>
               <ChatContainer />
             </Suspense>
           ),

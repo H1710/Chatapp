@@ -25,7 +25,7 @@ function ChatContainer() {
     theme: 'light',
   };
   const { currentRoomId } = useParams();
-
+  console.log(currentRoomId);
   const {
     data: dataRoom,
     isLoading: loadDataRoom,
@@ -35,7 +35,7 @@ function ChatContainer() {
     queryFn: () => {
       return getAPI(
         `${getChatroomMessages}/${currentRoomId}`,
-        auth.access_token
+        auth?.access_token
       );
     },
     onSuccess: data => {
@@ -53,23 +53,23 @@ function ChatContainer() {
     },
     staleTime: Infinity,
     cacheTime: 0,
-    enabled: currentRoomId ? true : false,
+    enabled: currentRoomId && auth?.access_token ? true : false,
   });
 
   const getNameContact = contact => {
-    if (contact.userIds.length === 2) {
+    if (contact?.userIds.length === 2) {
       if (contact.userIds[0]._id === auth._id) {
         return contact.userIds[1].firstname + ' ' + contact.userIds[1].lastname;
       } else {
         return contact.userIds[0].firstname + ' ' + contact.userIds[0].lastname;
       }
     } else {
-      return contact.name;
+      return contact?.name;
     }
   };
 
   const getUserIdContact = contact => {
-    if (contact.userIds.length === 2) {
+    if (contact?.userIds.length === 2) {
       if (contact.userIds[0]._id === auth._id) {
         return contact.userIds[1]._id;
       } else {
@@ -79,7 +79,7 @@ function ChatContainer() {
   };
 
   const getAvatarContact = contact => {
-    if (contact.userIds.length === 2) {
+    if (contact?.userIds.length === 2) {
       if (contact.userIds[0]._id === auth._id) {
         return contact.userIds[1]?.avatar;
       } else {
@@ -189,14 +189,14 @@ function ChatContainer() {
               <div>
                 <img
                   className="w-[50px] h-[50px] rounded-full object-cover "
-                  src={dataRoom.data.chatroom.avatar}
+                  src={dataRoom?.data?.chatroom.avatar}
                   alt=""
                 />
               </div>
             )}
 
             <p className="text-xl text-[#777777]">
-              {getNameContact(dataRoom.data.chatroom)}
+              {getNameContact(dataRoom?.data?.chatroom)}
             </p>
           </div>
         )}

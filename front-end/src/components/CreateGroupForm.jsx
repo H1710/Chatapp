@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { postAPI } from '../utils/FetchData';
@@ -21,18 +21,21 @@ const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
   const [image, setImage] = useState('');
   const queryClient = useQueryClient();
 
-  const [friends, setFriends] = useState(
-    auth?.friends
-      ? auth?.friends?.reduce((total, contact) => {
-          return [
-            ...total,
-            contact.senderId._id !== auth._id
-              ? contact.senderId
-              : contact.receiverId,
-          ];
-        }, [])
-      : []
-  );
+  const [friends, setFriends] = useState([]);
+  useEffect(() => {
+    if (auth?.friends) {
+      const friends = auth?.friends?.reduce((total, contact) => {
+        return [
+          ...total,
+          contact.senderId._id !== auth._id
+            ? contact.senderId
+            : contact.receiverId,
+        ];
+      }, []);
+
+      setFriends(friends);
+    }
+  }, [auth]);
 
   const filterFriends = searchtext => {
     const regex = new RegExp(searchtext, 'i'); // 'i' flag for case-insensitive search
@@ -226,7 +229,8 @@ const CreateGroupForm = ({ openGroupForm, setOpenGroupForm }) => {
                             </label>
                           </div>
                         ))
-                      : friends.map(contact => (
+                      : friends &&
+                        friends.map(contact => (
                           <div
                             className="flex items-center gap-2"
                             key={contact._id}

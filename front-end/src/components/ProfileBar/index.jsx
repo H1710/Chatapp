@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SearchUser from './SearchUser';
 import Message from './Message';
-import Notifications from '../Notifications';
+import Notifications from '../ProfileBar/Notifications';
 import { useSelector } from 'react-redux';
 import CreateGroupForm from '../CreateGroupForm';
 
@@ -28,7 +28,12 @@ function ProfileBar({ navSelect }) {
           : 'w-[75px]'
       } bg-[#FFFFFF] h-full `}
     >
-      {navSelect === 'messages' && <Message onlineUsers={onlineUsers} />}
+      {navSelect === 'messages' && (
+        <Message
+          onlineUsers={onlineUsers}
+          setOpenGroupForm={setOpenGroupForm}
+        />
+      )}
       {navSelect === 'search-friends' && <SearchUser />}
       {navSelect === 'notifications' && <Notifications />}
       <CreateGroupForm

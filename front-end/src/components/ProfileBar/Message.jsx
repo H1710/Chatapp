@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeRoom } from '../../redux/reducers/chatroomReducer';
-import { useNavigate } from 'react-router-dom';
 import Search from '../Search';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import ContactList from '../ContactList';
 
 function Message({ onlineUsers, setOpenGroupForm }) {
   // const currentRoom = useSelector(state => state.chatroom.currentRoom);
-
+  const [search, setSearch] = useState('');
   return (
     <div className="p-2 w-full h-full flex flex-col">
       <div className="px-[10px]">
@@ -21,7 +18,7 @@ function Message({ onlineUsers, setOpenGroupForm }) {
             }}
           />
         </div>
-        <Search field={'fullname'} />
+        {/* <Search field={'fullname'} setSearch={setSearch} /> */}
       </div>
 
       <br />
