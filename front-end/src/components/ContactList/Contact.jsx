@@ -5,14 +5,11 @@ import {
   getUserIdContact,
 } from '../../utils/ContactService';
 import UserInfomation from '../User/UserInfomation';
+import { useSelector } from 'react-redux';
 
-const Contact = ({
-  contact,
-  auth,
-  currentRoom,
-  onlineUsers,
-  changeCurrentChat,
-}) => {
+const Contact = ({ contact, currentRoom, onlineUsers, changeCurrentChat }) => {
+  const auth = useSelector(state => state.auth.auth);
+
   return (
     <div
       onClick={() => changeCurrentChat(contact)}

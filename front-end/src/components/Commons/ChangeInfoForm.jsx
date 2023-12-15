@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { patchAPI } from '../utils/FetchData';
+import { patchAPI } from '../../utils/FetchData';
 import { useMutation } from 'react-query';
-import { changeInfoRoute } from '../utils/APIRoutes';
+import { changeInfoRoute } from '../../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
-import { changeInfo } from '../redux/reducers/authReducer';
+import { changeInfo } from '../../redux/reducers/authReducer';
 
 const ChangeInfoForm = ({ openEditInfo, setOpenEditInfo }) => {
   const auth = useSelector(state => state.auth.auth);

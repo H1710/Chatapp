@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postAPI } from '../utils/FetchData';
+import { postAPI } from '../../utils/FetchData';
 import { useMutation, useQueryClient } from 'react-query';
-import { createChatroomRoute } from '../utils/APIRoutes';
+import { createChatroomRoute } from '../../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
 import ChangeAvatarGroupForm from './ChangeAvatarGroupForm';
 import { CircularProgress } from '@mui/material';

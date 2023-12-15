@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSelector } from 'react-redux';
-import { postAPI } from '../utils/FetchData';
+import { postAPI } from '../../utils/FetchData';
 import { useMutation } from 'react-query';
-import { logoutRoute } from '../utils/APIRoutes';
+import { logoutRoute } from '../../utils/APIRoutes';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 

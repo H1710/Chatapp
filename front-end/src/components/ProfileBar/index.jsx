@@ -3,7 +3,7 @@ import SearchUser from './SearchUser';
 import Message from './Message';
 import Notifications from '../ProfileBar/Notifications';
 import { useSelector } from 'react-redux';
-import CreateGroupForm from '../CreateGroupForm';
+import CreateGroupForm from '../Commons/CreateGroupForm';
 
 function ProfileBar({ navSelect }) {
   const [numberNotes, setNumberNotes] = useState(0);

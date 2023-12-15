@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import Contact from './Contact';
 import { useNavigate } from 'react-router-dom';
 
-const ContactList = () => {
+const ContactList = ({ contactList }) => {
   const [currentRoom, setCurrentRoom] = useState('');
-  const auth = useSelector(state => state.auth.auth);
   const socket = useSelector(state => state.socket.socket);
   const onlineUsers = useSelector(state => state.user.onlineUsers);
   const navigate = useNavigate();
@@ -20,12 +19,11 @@ const ContactList = () => {
 
   return (
     <div className="h-full flex flex-col overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-black scrollbar-thumb-rounded">
-      {auth?.chatroom && auth?.chatroom.length !== 0 ? (
-        auth.chatroom.map((contact, index) => (
+      {contactList.length !== 0 ? (
+        contactList.map((contact, index) => (
           <Contact
             contact={contact}
             key={index}
-            auth={auth}
             currentRoom={currentRoom}
             onlineUsers={onlineUsers}
             changeCurrentChat={changeCurrentChat}

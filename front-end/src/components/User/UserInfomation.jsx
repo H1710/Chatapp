@@ -6,7 +6,6 @@ import {
 } from '../../utils/ContactService';
 
 const UserInfomation = ({ contact, auth, onlineUsers }) => {
-  console.log(contact);
   return (
     <>
       <div className="flex items-center justify-center lg:mr-6 relative">

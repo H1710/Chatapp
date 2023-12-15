@@ -11,10 +11,10 @@ import { io } from 'socket.io-client';
 import Loading from './components/Alert/Loading.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 
-const Home = lazy(() => import('./pages/Home/index.jsx'));
+const Intro = lazy(() => import('./pages/Intro/index.jsx'));
 const Login = lazy(() => import('./pages/Auth/Login/index.jsx'));
 const Register = lazy(() => import('./pages/Auth/Register/index.jsx'));
-const ChatContainer = lazy(() => import('./components/ChatContainer'));
+const ChatroomDetail = lazy(() => import('./pages/Chatroom/_id.jsx'));
 
 function App() {
   const dispatch = useDispatch();
@@ -49,6 +49,14 @@ function App() {
       ],
     },
     {
+      path: '/register',
+      element: (
+        <Suspense fallback={<Loading />}>
+          <Register />
+        </Suspense>
+      ),
+    },
+    {
       path: '/home',
       element: (
         <Suspense fallback={<Loading />}>
@@ -56,24 +64,16 @@ function App() {
         </Suspense>
       ),
       children: [
-        { element: <Home />, index: true },
+        { path: 'intro', element: <Intro />, index: true },
         {
           path: 'chatroom/:currentRoomId',
           element: (
             <Suspense fallback={<></>}>
-              <ChatContainer />
+              <ChatroomDetail />
             </Suspense>
           ),
         },
       ],
-    },
-    {
-      path: '/register',
-      element: (
-        <Suspense fallback={<Loading />}>
-          <Register />
-        </Suspense>
-      ),
     },
   ]);
 

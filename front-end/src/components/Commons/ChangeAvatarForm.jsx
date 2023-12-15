@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { patchAPI } from '../utils/FetchData';
+import { patchAPI } from '../../utils/FetchData';
 import { useMutation } from 'react-query';
-import { avatarRoute } from '../utils/APIRoutes';
+import { avatarRoute } from '../../utils/APIRoutes';
 import { toast, ToastContainer } from 'react-toastify';
 import ImageCropDialog from './ImageCropDialog';
-import { changeAvatar } from '../redux/reducers/authReducer';
+import { changeAvatar } from '../../redux/reducers/authReducer';
 import { CircularProgress } from '@mui/material';
 
 const ChangeAvatarForm = ({ openEditAvatar, setOpenEditAvatar }) => {

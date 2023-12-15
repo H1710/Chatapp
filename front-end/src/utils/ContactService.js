@@ -1,4 +1,7 @@
 export const getNameContact = (contact, auth) => {
+  if (contact?.name) {
+    return contact.name;
+  }
   if (contact.userIds.length === 2) {
     if (contact.userIds[0]._id === auth._id) {
       return contact.userIds[1].firstname + ' ' + contact.userIds[1].lastname;

@@ -1,12 +1,8 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import ProfileBar from '../../components/ProfileBar/index';
 import 'react-toastify/dist/ReactToastify.css';
-import NavigationBar from '../../components/NavigationBar/index';
-import { ToastContainer, toast } from 'react-toastify';
 import logoHome from '../../assets/images/logoHome.png';
 
-function Home() {
+function Intro() {
   return (
     <div className="flex justify-center items-center h-full">
       <img
@@ -21,4 +17,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Intro;

@@ -7,8 +7,7 @@ import { BiSolidBell } from 'react-icons/bi';
 import { PiMagnifyingGlassFill } from 'react-icons/pi';
 import { FiLogOut } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import ChangeInfoForm from '../ChangeInfoForm';
-import LogoutForm from '../LogoutForm';
+import LogoutForm from '../Commons/LogoutForm';
 import { useNavigate } from 'react-router-dom';
 
 const NavigationBar = ({ currentUser, socket, handleSetNav, navSelect }) => {
