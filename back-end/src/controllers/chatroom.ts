@@ -25,7 +25,7 @@ class ChatRoomController {
         unique_filename: false,
       });
 
-      const users = userIds.split(',');
+      const users = JSON.parse(userIds);
 
       const chatroom = await ChatRoom.create({
         userIds: users,

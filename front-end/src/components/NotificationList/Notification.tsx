@@ -51,7 +51,7 @@ const Notification: React.FC<NotificationProps> = ({ contact }) => {
         toast.error(error.response.data.message);
       },
       onSuccess: data => {
-        toast.success(data.data.message);
+        toast.success(data.message);
         queryClient.invalidateQueries(['refresh_token']);
         queryClient.invalidateQueries(['notifications']);
       },

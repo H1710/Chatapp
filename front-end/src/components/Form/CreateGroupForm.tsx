@@ -80,8 +80,6 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues(prev => {
       if (e.target.name === 'users') {
-        console.log(e.target.value);
-
         const updateFriends = [...prev.userIds];
 
         if (e.target.checked) {
