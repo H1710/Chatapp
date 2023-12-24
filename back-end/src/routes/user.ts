@@ -16,11 +16,7 @@ const upload = multer({ storage });
 
 const router = Router();
 
-router.get(
-  '/get-notifications/:userId',
-  AuthMiddleware.auth,
-  UserController.getNotifications
-);
+router.get('/get-notifications/:userId', UserController.getNotifications);
 router.get('/get-contacts', AuthMiddleware.auth, UserController.getAllContacts);
 router.get(
   '/get-friendlist/:userId',
